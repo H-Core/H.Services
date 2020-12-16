@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="H.Containers.Process" Version="0.4.7.2" />
-    <PackageReference Include="H.Modules" Version="0.1.3" />
+    <PackageReference Include="H.Modules" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
