@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net4.6.1</TargetFrameworks>
+    <RootNamespace>H.Services</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Description></Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\H.Services.Core\H.Services.Core.csproj" />
+  </ItemGroup>
+  
+</Project>

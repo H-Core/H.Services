@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
+    <PackageReference Include="H.Notifiers.RssNotifier" Version="0.14.6" />
+    <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.12.0" />
+    <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.12.0" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.14.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\H.Services\H.Services.csproj" />
+  </ItemGroup>
+
+</Project>
