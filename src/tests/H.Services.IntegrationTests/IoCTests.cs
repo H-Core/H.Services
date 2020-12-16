@@ -62,15 +62,13 @@ namespace H.Services.IntegrationTests
             var cancellationToken = cancellationTokenSource.Token;
 
             await using var container = CreateContainer();
-            var exceptions = container
+            using var exceptions = container
                 .Resolve<IEnumerable<IServiceBase>>()
                 .EnableLogging(cancellationTokenSource);
             
             var recognitionService = container.Resolve<RecognitionService>();
             
             await recognitionService.Start5SecondsStart5SecondsStopTestAsync(cancellationToken);
-
-            exceptions.EnsureNoExceptions();
         }
     }
 }

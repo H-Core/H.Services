@@ -34,7 +34,7 @@ namespace H.Services.IntegrationTests
             await using var recognitionService = new RecognitionService(moduleFinder);
             await using var runnerService = new RunnerService(moduleFinder, moduleService, recognitionService, deskbandService);
             
-            var exceptions = new IServiceBase[]
+            using var exceptions = new IServiceBase[]
             {
                 moduleService, recognitionService, moduleFinder, runnerService, deskbandService
             }.EnableLogging(cancellationTokenSource);
@@ -51,8 +51,6 @@ namespace H.Services.IntegrationTests
             await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
 
             await runnerService.RunAsync(new Command("deskband", "clear-preview", ""), cancellationToken);
-            
-            exceptions.EnsureNoExceptions();
         }
     }
 }
