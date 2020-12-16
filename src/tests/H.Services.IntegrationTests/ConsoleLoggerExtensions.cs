@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core.Utilities;
@@ -39,6 +40,41 @@ namespace H.Services.IntegrationTests
                     Console.WriteLine($"{nameof(hookService.CombinationCaught)}: {value}");
                 };
             }
+            if (service is RecognitionService recognitionService)
+            {
+                recognitionService.PreviewCommandReceived += (_, value) =>
+                {
+                    Console.WriteLine($"{nameof(recognitionService.PreviewCommandReceived)}: {value}");
+                };
+            }
+            if (service is RunnerService runnerService)
+            {
+                runnerService.CallRunning += (_, call) =>
+                {
+                    Console.WriteLine($"{nameof(runnerService.CallRunning)}: {call}");
+                };
+                runnerService.CallRan += (_, call) =>
+                {
+                    Console.WriteLine($"{nameof(runnerService.CallRan)}: {call}");
+                };
+                runnerService.CallCancelled += (_, call) =>
+                {
+                    Console.WriteLine($"{nameof(runnerService.CallCancelled)}: {call}");
+                };
+            }
+        }
+
+        public static ExceptionsBag EnableLogging(
+            this IEnumerable<IServiceBase> services,
+            CancellationTokenSource? source = null)
+        {
+            var exceptions = new ExceptionsBag();
+            foreach (var service in services)
+            {
+                service.EnableLogging(exceptions, source);
+            }
+
+            return exceptions;
         }
     }
 }

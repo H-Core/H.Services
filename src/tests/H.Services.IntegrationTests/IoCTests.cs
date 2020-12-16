@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using H.Core.Utilities;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -63,26 +62,9 @@ namespace H.Services.IntegrationTests
             var cancellationToken = cancellationTokenSource.Token;
 
             await using var container = CreateContainer();
-            var exceptions = new ExceptionsBag();
-            
-            foreach (var service in container.Resolve<IEnumerable<IServiceBase>>())
-            {
-                service.ExceptionOccurred += (_, exception) =>
-                {
-                    Console.WriteLine($"{nameof(service.ExceptionOccurred)}: {exception}");
-                    exceptions.OnOccurred(exception);
-
-                    // ReSharper disable once AccessToDisposedClosure
-                    cancellationTokenSource.Cancel();
-                };
-            }
-            foreach (var service in container.Resolve<IEnumerable<ICommandProducer>>())
-            {
-                service.CommandReceived += (_, value) =>
-                {
-                    Console.WriteLine($"{nameof(service.CommandReceived)}: {value}");
-                };
-            }
+            var exceptions = container
+                .Resolve<IEnumerable<IServiceBase>>()
+                .EnableLogging(cancellationTokenSource);
             
             var recognitionService = container.Resolve<RecognitionService>();
             

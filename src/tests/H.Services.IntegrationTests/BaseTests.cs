@@ -11,11 +11,6 @@ namespace H.Services.IntegrationTests
             this RecognitionService service, 
             CancellationToken cancellationToken = default)
         {
-            service.PreviewCommandReceived += (_, value) =>
-            {
-                Console.WriteLine($"{nameof(service.PreviewCommandReceived)}: {value}");
-            };
-
             await service.StartAsync(cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);

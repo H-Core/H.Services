@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
-using H.Core.Utilities;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,43 +33,11 @@ namespace H.Services.IntegrationTests
             await using var moduleFinder = new ModuleFinder(moduleService);
             await using var recognitionService = new RecognitionService(moduleFinder);
             await using var runnerService = new RunnerService(moduleFinder, moduleService, recognitionService, deskbandService);
-            runnerService.CallRunning += (_, call) =>
+            
+            var exceptions = new IServiceBase[]
             {
-                Console.WriteLine($"{nameof(runnerService.CallRunning)}: {call}");
-            };
-            runnerService.CallRan += (_, call) =>
-            {
-                Console.WriteLine($"{nameof(runnerService.CallRan)}: {call}");
-            };
-            runnerService.CallCancelled += (_, call) =>
-            {
-                Console.WriteLine($"{nameof(runnerService.CallCancelled)}: {call}");
-            };
-            var exceptions = new ExceptionsBag();
-            foreach (var service in new IServiceBase[] { moduleService, recognitionService, moduleFinder, runnerService, deskbandService })
-            {
-                service.ExceptionOccurred += (_, exception) =>
-                {
-                    Console.WriteLine($"{nameof(service.ExceptionOccurred)}: {exception}");
-                    exceptions.OnOccurred(exception);
-
-                    // ReSharper disable once AccessToDisposedClosure
-                    cancellationTokenSource.Cancel();
-                };
-            }
-            foreach (var service in new ICommandProducer[] { moduleService, recognitionService, deskbandService })
-            {
-                service.CommandReceived += (_, value) =>
-                {
-                    Console.WriteLine($"{nameof(service.CommandReceived)}: {value}");
-                };
-                service.AsyncCommandReceived += (_, value, _) =>
-                {
-                    Console.WriteLine($"{nameof(service.AsyncCommandReceived)}: {value}");
-                    
-                    return Task.CompletedTask;
-                };
-            }
+                moduleService, recognitionService, moduleFinder, runnerService, deskbandService
+            }.EnableLogging(cancellationTokenSource);
 
             moduleService.Add(new IpcClientServiceRunner("deskband", deskbandService));
             moduleService.Add(new RecognitionServiceRunner(recognitionService));
