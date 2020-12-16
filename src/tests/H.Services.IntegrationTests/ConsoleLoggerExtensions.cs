@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using H.Core.Utilities;
 using H.Services.Core;
 
@@ -75,6 +76,15 @@ namespace H.Services.IntegrationTests
             }
 
             return exceptions;
+        }
+
+        public static ExceptionsBag EnableLoggingForServices(
+            this IContainer container,
+            CancellationTokenSource? source = null)
+        {
+            return container
+                .Resolve<IEnumerable<IServiceBase>>()
+                .EnableLogging(source);
         }
     }
 }

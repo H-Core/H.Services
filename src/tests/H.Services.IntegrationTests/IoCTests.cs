@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -11,7 +10,6 @@ namespace H.Services.IntegrationTests
     [TestClass]
     public class IoCTests
     {
-
         public static IContainer CreateContainer()
         {
             var builder = new ContainerBuilder();
@@ -62,9 +60,7 @@ namespace H.Services.IntegrationTests
             var cancellationToken = cancellationTokenSource.Token;
 
             await using var container = CreateContainer();
-            using var exceptions = container
-                .Resolve<IEnumerable<IServiceBase>>()
-                .EnableLogging(cancellationTokenSource);
+            using var exceptions = container.EnableLoggingForServices(cancellationTokenSource);
             
             var recognitionService = container.Resolve<RecognitionService>();
             
