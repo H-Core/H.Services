@@ -85,7 +85,7 @@ namespace H.Services
                 await StopAsync(cancellationToken).ConfigureAwait(false);
             }
             
-            var exceptions = new ExceptionsBag();
+            using var exceptions = new ExceptionsBag();
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             
             // TODO: EXCLUDE WRITE WAV HEADER FROM LOGIC.
