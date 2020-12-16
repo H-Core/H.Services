@@ -32,7 +32,10 @@ namespace H.Services.IntegrationTests
             );
             await using var moduleFinder = new ModuleFinder(moduleService);
             await using var recognitionService = new RecognitionService(moduleFinder);
-            await using var runnerService = new RunnerService(moduleFinder, moduleService, recognitionService, deskbandService);
+            await using var runnerService = new RunnerService(
+                moduleFinder, 
+                moduleService, recognitionService, deskbandService
+            );
             
             using var exceptions = new IServiceBase[]
             {
@@ -43,14 +46,6 @@ namespace H.Services.IntegrationTests
             moduleService.Add(new RecognitionServiceRunner(recognitionService));
 
             await runnerService.StartRecord5SecondsStopRecordTestAsync(cancellationToken);
-
-            await runnerService.RunAsync(new Command("run", "sleep", "5000"), cancellationToken);
-            
-            runnerService.CancelAll();
-
-            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-
-            await runnerService.RunAsync(new Command("deskband", "clear-preview", ""), cancellationToken);
         }
     }
 }

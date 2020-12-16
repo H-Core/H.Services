@@ -17,8 +17,8 @@ namespace H.Services
         {
             service = service ?? throw new ArgumentNullException(nameof(service));
 
-            Add(new AsyncAction("start-record", service.StartAsync));
-            Add(new AsyncAction("stop-record", service.StopAsync));
+            Add(new AsyncAction("start-recognition", service.StartAsync));
+            Add(new AsyncAction("stop-recognition", service.StopAsync));
         }
 
         #endregion

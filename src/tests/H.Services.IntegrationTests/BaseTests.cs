@@ -34,11 +34,11 @@ namespace H.Services.IntegrationTests
             this RunnerService service,
             CancellationToken cancellationToken = default)
         {
-            await service.RunAsync(new Command("start-record"), cancellationToken);
+            await service.RunAsync(new Command("start-recognition"), cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
-            await service.RunAsync(new Command("stop-record"), cancellationToken);
+            await service.RunAsync(new Command("stop-recognition"), cancellationToken);
 
             try
             {
