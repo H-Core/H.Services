@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.RunnerService", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.IpcService", "src\libs\H.Services.IpcService\H.Services.IpcService.csproj", "{31A2C5C1-BD99-44BE-8A97-F69173412E3B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.HooksService", "src\libs\H.Services.HooksService\H.Services.HooksService.csproj", "{A95308EC-E8E6-4298-B8F3-7CDDFF382B86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.HookService", "src\libs\H.Services.HookService\H.Services.HookService.csproj", "{A95308EC-E8E6-4298-B8F3-7CDDFF382B86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

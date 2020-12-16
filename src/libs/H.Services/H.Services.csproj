@@ -11,7 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\H.Services.Core\H.Services.Core.csproj" />
     <ProjectReference Include="..\H.Services.DynamicModuleService\H.Services.DynamicModuleService.csproj" />
-    <ProjectReference Include="..\H.Services.HooksService\H.Services.HooksService.csproj" />
+    <ProjectReference Include="..\H.Services.HookService\H.Services.HookService.csproj" />
     <ProjectReference Include="..\H.Services.IpcService\H.Services.IpcService.csproj" />
     <ProjectReference Include="..\H.Services.RecognitionService\H.Services.RecognitionService.csproj" />
     <ProjectReference Include="..\H.Services.RunnerService\H.Services.RunnerService.csproj" />

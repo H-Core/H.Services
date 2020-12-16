@@ -11,7 +11,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class HooksService : ServiceBase, ICommandProducer
+    public sealed class HookService : ServiceBase, ICommandProducer
     {
         #region Properties
 
@@ -60,7 +60,7 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public HooksService()
+        public HookService()
         {
             Disposables.Add(MouseHook);
             Disposables.Add(KeyboardHook);
