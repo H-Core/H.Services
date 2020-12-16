@@ -106,6 +106,22 @@ namespace H.Services.Core
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="action"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected Task InitializeAsync(Action action, CancellationToken cancellationToken = default)
+        {
+            return InitializeAsync(() =>
+            {
+                action();
+
+                return Task.CompletedTask;
+            }, cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual async Task InitializeAsync(CancellationToken cancellationToken = default)
