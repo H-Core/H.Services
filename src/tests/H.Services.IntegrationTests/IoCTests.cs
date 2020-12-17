@@ -10,45 +10,35 @@ namespace H.Services.IntegrationTests
     [TestClass]
     public class IoCTests
     {
+        private static void AddModule<T>(ContainerBuilder builder, T value) where T : class
+        {
+            builder
+                .RegisterInstance(value)
+                .AsImplementedInterfaces();
+        }
+        
+        private static void AddService<T>(ContainerBuilder builder) where T : notnull
+        {
+            builder
+                .RegisterType<T>()
+                .SingleInstance()
+                .AsImplementedInterfaces()
+                .AsSelf();
+        }
+
         public static IContainer CreateContainer()
         {
             var builder = new ContainerBuilder();
 
-            builder
-                .RegisterInstance(TestModules.CreateDefaultRecorder())
-                .AsImplementedInterfaces();
-            builder
-                .RegisterInstance(TestModules.CreateDefaultRecognizer())
-                .AsImplementedInterfaces();
-            builder
-                .RegisterInstance(TestModules.CreateTimerNotifierWithPrintHelloWorldEach3Seconds())
-                .AsImplementedInterfaces();
-            builder
-                .RegisterInstance(TestModules.CreateRunnerWithPrintCommand())
-                .AsImplementedInterfaces();
-            builder
-                .RegisterInstance(TestModules.CreateTelegramRunner())
-                .AsImplementedInterfaces();
-            builder
-                .RegisterType<StaticModuleService>()
-                .SingleInstance()
-                .AsImplementedInterfaces()
-                .AsSelf();
-            builder
-                .RegisterType<ModuleFinder>()
-                .SingleInstance()
-                .AsImplementedInterfaces()
-                .AsSelf();
-            builder
-                .RegisterType<RecognitionService>()
-                .SingleInstance()
-                .AsImplementedInterfaces()
-                .AsSelf();
-            builder
-                .RegisterType<RunnerService>()
-                .SingleInstance()
-                .AsImplementedInterfaces()
-                .AsSelf();
+            AddModule(builder, TestModules.CreateDefaultRecorder());
+            AddModule(builder, TestModules.CreateDefaultRecognizer());
+            AddModule(builder, TestModules.CreateRunnerWithPrintCommand());
+            AddModule(builder, TestModules.CreateTelegramRunner());
+            
+            AddService<StaticModuleService>(builder);
+            AddService<ModuleFinder>(builder);
+            AddService<RecognitionService>(builder);
+            AddService<RunnerService>(builder);
 
             return builder.Build();
         }
