@@ -18,10 +18,10 @@ namespace H.Services
     {
         #region Properties
 
-        private ModuleFinder ModuleFinder { get; }
+        private FinderService FinderService { get; }
 
-        private IRecognizer Recognizer => ModuleFinder.Recognizer;
-        private IRecorder Recorder => ModuleFinder.Recorder;
+        private IRecognizer Recognizer => FinderService.Recognizer;
+        private IRecorder Recorder => FinderService.Recorder;
 
         private ConcurrentDictionary<IStreamingRecognition, bool> Recognitions { get; } = new ();
         
@@ -58,12 +58,12 @@ namespace H.Services
 
         #region Constructors
 
-        /// <param name="moduleFinder"></param>
-        public RecognitionService(ModuleFinder moduleFinder)
+        /// <param name="finderService"></param>
+        public RecognitionService(FinderService finderService)
         {
-            ModuleFinder = moduleFinder ?? throw new ArgumentNullException(nameof(moduleFinder));
+            FinderService = finderService ?? throw new ArgumentNullException(nameof(finderService));
             
-            Dependencies.Add(ModuleFinder);
+            Dependencies.Add(FinderService);
         }
 
         #endregion

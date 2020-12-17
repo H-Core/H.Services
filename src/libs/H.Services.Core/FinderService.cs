@@ -11,7 +11,7 @@ namespace H.Services.Core
     /// <summary>
     /// 
     /// </summary>
-    public class ModuleFinder : ServiceBase
+    public class FinderService : ServiceBase
     {
         #region Properties
 
@@ -45,7 +45,7 @@ namespace H.Services.Core
 
         /// <param name="moduleServices"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ModuleFinder(params IModuleService[] moduleServices)
+        public FinderService(params IModuleService[] moduleServices)
         {
             ModuleServices = moduleServices ?? throw new ArgumentNullException(nameof(moduleServices));
 

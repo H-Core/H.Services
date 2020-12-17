@@ -16,7 +16,7 @@ namespace H.Services
     {
         #region Properties
 
-        private ModuleFinder ModuleFinder { get; }
+        private FinderService FinderService { get; }
         private ConcurrentDictionary<ICall, CancellationTokenSource> CancellationTokenSources { get; } = new();
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace H.Services
 
         #region Constructors
 
-        /// <param name="moduleFinder"></param>
+        /// <param name="finderService"></param>
         /// <param name="commandProducers"></param>
-        public RunnerService(ModuleFinder moduleFinder, params ICommandProducer[] commandProducers)
+        public RunnerService(FinderService finderService, params ICommandProducer[] commandProducers)
         {
-            ModuleFinder = moduleFinder ?? throw new ArgumentNullException(nameof(moduleFinder));
+            FinderService = finderService ?? throw new ArgumentNullException(nameof(finderService));
             commandProducers = commandProducers ?? throw new ArgumentNullException(nameof(commandProducers));
 
             foreach (var producer in commandProducers)
@@ -94,7 +94,7 @@ namespace H.Services
             command = command ?? throw new ArgumentNullException(nameof(command));
             
             var tasks = new List<Task>();
-            foreach (var call in ModuleFinder.GetCalls(command))
+            foreach (var call in FinderService.GetCalls(command))
             {
                 var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 CancellationTokenSources.TryAdd(call, source);
