@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class HookService : ServiceBase, ICommandProducer
+    public sealed class HookService : ServiceBase, ICommandProducer, IEnumerable<BoundCommand>
     {
         #region Properties
 
@@ -21,7 +22,7 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public Dictionary<KeysCombination, Command> Combinations { get; } = new ();
+        private Dictionary<ConsoleKeyInfo, BoundCommand> BoundCommands { get; } = new ();
 
         #endregion
 
@@ -68,12 +69,14 @@ namespace H.Services
             KeyboardHook.KeyUp += (_, args) =>
             {
                 var combination = new KeysCombination(args.Key, args.IsCtrlPressed, args.IsShiftPressed, args.IsAltPressed);
+                var info = new ConsoleKeyInfo(
+                    (char)args.Key, (ConsoleKey)args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
 
                 OnCombinationCaught(combination.ToString());
 
-                if (Combinations.TryGetValue(combination, out var command))
+                if (BoundCommands.TryGetValue(info, out var command))
                 {
-                    OnCommandReceived(command);
+                    OnCommandReceived(command.Command);
                 }
             };
         }
@@ -95,21 +98,32 @@ namespace H.Services
                 MouseHook.Start();
             }, cancellationToken);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="combination"></param>
-        /// <returns></returns>
-        public void RunCombination(KeysCombination combination)
+        /// <param name="command"></param>
+        public void Add(BoundCommand command)
         {
-            if (!Combinations.TryGetValue(combination, out var command))
-            {
-                return;
-            }
-
-            OnCommandReceived(command);
+            command = command ?? throw new ArgumentNullException(nameof(command));
+            
+            BoundCommands.Add(command.ConsoleKeyInfo, command);
         }
+        
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="combination"></param>
+        ///// <returns></returns>
+        //public void RunCombination(KeysCombination combination)
+        //{
+        //    if (!Combinations.TryGetValue(combination, out var command))
+        //    {
+        //        return;
+        //    }
+
+        //    OnCommandReceived(command);
+        //}
 
         /// <summary>
         /// 
@@ -171,6 +185,20 @@ namespace H.Services
             }
 
             return isCancel ? null : combination;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<BoundCommand> GetEnumerator()
+        {
+            return BoundCommands.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return BoundCommands.Values.GetEnumerator();
         }
 
         #endregion
