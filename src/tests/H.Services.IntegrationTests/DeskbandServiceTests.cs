@@ -8,10 +8,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace H.Services.IntegrationTests
 {
     [TestClass]
-    public class Tests
+    public class DeskbandServiceTests
     {
         [TestMethod]
-        public async Task RecognitionServiceTest()
+        public async Task SimpleTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
@@ -22,30 +22,27 @@ namespace H.Services.IntegrationTests
                 DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),
             };
             await using var moduleService = new StaticModuleService(
-                TestModules.CreateDefaultRecorder(),
-                TestModules.CreateDefaultRecognizer(),
-                TestModules.CreateRunnerWithPrintCommand(),
-                TestModules.CreateRunnerWithSleepCommand(),
-                TestModules.CreateRunnerWithSyncSleepCommand(),
-                TestModules.CreateRunnerWithRunAsyncCommand(),
-                TestModules.CreateTelegramRunner()
+                TestModules.CreateTimerNotifierWithDeskbandDateTimeEach1Seconds(),
+                TestModules.CreateRunnerWithPrintCommand()
             );
-            await using var moduleFinder = new ModuleFinder(moduleService);
-            await using var recognitionService = new RecognitionService(moduleFinder);
+            await using var finderService = new FinderService(moduleService);
             await using var runnerService = new RunnerService(
-                moduleFinder, 
-                moduleService, recognitionService, deskbandService
+                finderService, 
+                moduleService, deskbandService
             );
             
             using var exceptions = new IServiceBase[]
             {
-                moduleService, recognitionService, moduleFinder, runnerService, deskbandService
+                moduleService, finderService, runnerService, deskbandService
             }.EnableLogging(cancellationTokenSource);
 
             moduleService.Add(new IpcClientServiceRunner("deskband", deskbandService));
-            moduleService.Add(new RecognitionServiceRunner(recognitionService));
 
-            await runnerService.StartRecord5SecondsStopRecordTestAsync(cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await runnerService.RunAsync(
+                new Command("deskband", "clear-preview", "" /* TODO: <---- Bug in H.Deskband */), 
+                cancellationToken);
         }
     }
 }

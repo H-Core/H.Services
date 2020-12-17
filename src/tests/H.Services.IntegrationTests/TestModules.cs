@@ -79,7 +79,7 @@ namespace H.Services.IntegrationTests
             };
         }
 
-        public static IRunner CreateRunnerWithRunAsyncCommand()
+        public static IRunner CreateRunnerWithRunCommand()
         {
             var runner = new Runner();
             runner.Add(SyncAction.WithCommand(
@@ -98,6 +98,20 @@ namespace H.Services.IntegrationTests
                     token), 
                 "command"));
             
+            return runner;
+        }
+
+        public static IRunner CreateAliasRunnerCommand(string name, params string[] aliases)
+        {
+            var runner = new Runner();
+            foreach (var alias in aliases)
+            {
+                runner.Add(SyncAction.WithCommand(
+                    alias,
+                    command => runner.Run(new Command(name, command.Arguments)),
+                    "arguments"));
+            }
+
             return runner;
         }
 

@@ -7,6 +7,20 @@ namespace H.Services.IntegrationTests
 {
     public static class BaseTests
     {
+        public static async Task Start5SecondsStop1SecondTestAsync(
+            this RecognitionService service,
+            CancellationToken cancellationToken = default)
+        {
+            await service.StartAsync(cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await service.StopAsync(cancellationToken);
+            
+            // TODO: Wait current commands?
+            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+        }
+        
         public static async Task Start5SecondsStart5SecondsStopTestAsync(
             this RecognitionService service, 
             CancellationToken cancellationToken = default)

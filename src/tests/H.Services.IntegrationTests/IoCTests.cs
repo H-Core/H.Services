@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using H.Core;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,17 +27,17 @@ namespace H.Services.IntegrationTests
                 .AsSelf();
         }
 
-        public static IContainer CreateContainer()
+        public static IContainer CreateContainer(params IModule[] modules)
         {
             var builder = new ContainerBuilder();
 
-            AddModule(builder, TestModules.CreateDefaultRecorder());
-            AddModule(builder, TestModules.CreateDefaultRecognizer());
-            AddModule(builder, TestModules.CreateRunnerWithPrintCommand());
-            AddModule(builder, TestModules.CreateTelegramRunner());
+            foreach (var module in modules)
+            {
+                AddModule(builder, module);
+            }
             
             AddService<StaticModuleService>(builder);
-            AddService<ModuleFinder>(builder);
+            AddService<FinderService>(builder);
             AddService<RecognitionService>(builder);
             AddService<RunnerService>(builder);
 
@@ -44,12 +45,16 @@ namespace H.Services.IntegrationTests
         }
 
         [TestMethod]
-        public async Task RecognitionServiceTest()
+        public async Task BaseTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            await using var container = CreateContainer();
+            await using var container = CreateContainer(
+                TestModules.CreateDefaultRecorder(),
+                TestModules.CreateDefaultRecognizer(),
+                TestModules.CreateRunnerWithPrintCommand()
+            );
             using var exceptions = container.EnableLoggingForServices(cancellationTokenSource);
             
             var recognitionService = container.Resolve<RecognitionService>();
