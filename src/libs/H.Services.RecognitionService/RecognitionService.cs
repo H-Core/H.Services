@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
@@ -20,9 +22,9 @@ namespace H.Services
 
         private IRecognizer Recognizer => ModuleFinder.Recognizer;
         private IRecorder Recorder => ModuleFinder.Recorder;
-        
-        private IStreamingRecognition? CurrentRecognition { get; set; }
 
+        private ConcurrentDictionary<IStreamingRecognition, bool> Recognitions { get; } = new ();
+        
         #endregion
 
         #region Events
@@ -73,29 +75,34 @@ namespace H.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task StartAsync(CancellationToken cancellationToken = default)
+        public async Task<IStreamingRecognition> StartAsync(CancellationToken cancellationToken = default)
         {
             if (InitializeState is not State.Completed)
             {
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
             
-            if (CurrentRecognition != null)
-            {
-                await StopAsync(cancellationToken).ConfigureAwait(false);
-            }
-            
             using var exceptions = new ExceptionsBag();
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             
             // TODO: EXCLUDE WRITE WAV HEADER FROM LOGIC.
-            CurrentRecognition = await Recognizer.StartStreamingRecognitionAsync(
+            var recognition = await Recognizer.StartStreamingRecognitionAsync(
                 Recorder, true, exceptions, cancellationToken)
                 .ConfigureAwait(false);
-            CurrentRecognition.PartialResultsReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
-            CurrentRecognition.FinalResultsReceived += (_, value) => OnCommandReceived(Command.Parse(value));
+            recognition.PartialResultsReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
+            recognition.FinalResultsReceived += (_, value) => OnCommandReceived(Command.Parse(value));
+            recognition.Stopped += (_, _) =>
+            {
+                Recognitions.TryRemove(recognition, out _);
+                
+                recognition.Dispose();
+            };
+                
+            Recognitions.TryAdd(recognition, true);
+            
+            return recognition;
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -103,15 +110,10 @@ namespace H.Services
         /// <returns></returns>
         public async Task StopAsync(CancellationToken cancellationToken = default)
         {
-            if (CurrentRecognition == null)
-            {
-                return;
-            }
-            
-            await CurrentRecognition.StopAsync(cancellationToken).ConfigureAwait(false);
-
-            CurrentRecognition.Dispose();
-            CurrentRecognition = null;
+            await Task.WhenAll(Recognitions
+                .Keys
+                .Select(async recognition => await recognition.StopAsync(cancellationToken).ConfigureAwait(false)))
+                .ConfigureAwait(false);
         }
 
         /// <summary>
