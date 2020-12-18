@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
+using H.Core;
 using H.Core.Runners;
 
 namespace H.Services
@@ -19,6 +22,15 @@ namespace H.Services
 
             Add(new AsyncAction("start-recognition", service.StartAsync));
             Add(new AsyncAction("stop-recognition", service.StopAsync));
+            Add(AsyncAction.WithCommand("start-record", async (command, cancellationToken) =>
+            {
+                var milliseconds = Convert.ToInt32(command.Arguments.First(), CultureInfo.InvariantCulture);
+                var bytes = await service.StartRecordAsync(
+                        TimeSpan.FromMilliseconds(milliseconds), cancellationToken)
+                    .ConfigureAwait(false);
+                
+                return new Command(string.Empty, bytes);
+            }));
         }
 
         #endregion
