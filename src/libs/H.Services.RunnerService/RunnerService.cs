@@ -102,7 +102,6 @@ namespace H.Services
             var call = GetCalls(command).First();
             var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var process = new Process<IValue>();
-            call.Command.Process = process;
             
             CancellationTokenSources.TryAdd(call, source);
 
@@ -112,7 +111,7 @@ namespace H.Services
                 {
                     OnCallRunning(call);
 
-                    var result = await call.RunAsync(source.Token).ConfigureAwait(false);
+                    var result = await call.RunAsync(process, source.Token).ConfigureAwait(false);
 
                     OnCallRan(call);
                     

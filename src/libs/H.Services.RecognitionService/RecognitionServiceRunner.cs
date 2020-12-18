@@ -22,13 +22,12 @@ namespace H.Services
             Add(new AsyncAction("start-recognition", service.StartAsync));
             Add(new AsyncAction("stop-recognition", service.StopAsync));
             
-            Add(new AsyncAction("record", async (command, cancellationToken) =>
+            Add(new ProcessAction("record", async (process, command, cancellationToken) =>
             {
                 var format = Enum.TryParse<RecordingFormat>(
                     command.Value.Arguments.ElementAt(0), true, out var result)
                     ? result
                     : RecordingFormat.Mp3;
-                var process = command.Process ?? throw new ArgumentException(nameof(command.Process));
                 
                 using var recording = await service.StartRecordAsync(format, cancellationToken)
                     .ConfigureAwait(false);
