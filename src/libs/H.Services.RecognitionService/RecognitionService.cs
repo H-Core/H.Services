@@ -74,16 +74,17 @@ namespace H.Services
         /// 
         /// </summary>
         /// <param name="timeout"></param>
+        /// <param name="format"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<byte[]> StartRecordAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+        public async Task<byte[]> StartRecordAsync(TimeSpan timeout, RecordingFormat format, CancellationToken cancellationToken = default)
         {
             if (InitializeState is not State.Completed)
             {
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
             
-            var recognition = await Recorder.StartWithTimeoutAsync(timeout, cancellationToken)
+            var recognition = await Recorder.StartWithTimeoutAsync(timeout, format, cancellationToken)
                 .ConfigureAwait(false);
 
             return recognition.Data;
@@ -105,8 +106,7 @@ namespace H.Services
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             
             // TODO: EXCLUDE WRITE WAV HEADER FROM LOGIC.
-            var recognition = await Recognizer.StartStreamingRecognitionAsync(
-                Recorder, true, exceptions, cancellationToken)
+            var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
                 .ConfigureAwait(false);
             recognition.PartialResultsReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
             recognition.FinalResultsReceived += (_, value) => OnCommandReceived(Command.Parse(value));
