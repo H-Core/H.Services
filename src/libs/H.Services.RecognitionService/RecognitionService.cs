@@ -73,6 +73,25 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<byte[]> StartRecordAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+        {
+            if (InitializeState is not State.Completed)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+            
+            var recognition = await Recorder.StartWithTimeoutAsync(timeout, cancellationToken)
+                .ConfigureAwait(false);
+
+            return recognition.Data;
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<IStreamingRecognition> StartAsync(CancellationToken cancellationToken = default)
