@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Autofac.Builder;
 using H.Core;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,9 +19,10 @@ namespace H.Services.IntegrationTests
                 .AsImplementedInterfaces();
         }
         
-        private static void AddService<T>(ContainerBuilder builder) where T : notnull
+        private static IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle> AddService<T>(
+            ContainerBuilder builder) where T : notnull
         {
-            builder
+            return builder
                 .RegisterType<T>()
                 .SingleInstance()
                 .AsImplementedInterfaces()
@@ -39,7 +41,8 @@ namespace H.Services.IntegrationTests
             AddService<StaticModuleService>(builder);
             AddService<FinderService>(builder);
             AddService<RecognitionService>(builder);
-            AddService<RunnerService>(builder);
+            AddService<RunnerService>(builder)
+                .UsingConstructor(typeof(IModuleService[]), typeof(ICommandProducer[]));
 
             return builder.Build();
         }
