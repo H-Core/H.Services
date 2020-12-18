@@ -95,13 +95,13 @@ namespace H.Services
         /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public IProcess<ICommand> Start(ICommand command, CancellationToken cancellationToken = default)
+        public IProcess<IValue> Start(ICommand command, CancellationToken cancellationToken = default)
         {
             command = command ?? throw new ArgumentNullException(nameof(command));
 
             var call = GetCalls(command).First();
             var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            var process = new Process<ICommand>();
+            var process = new Process<IValue>();
             call.Command.Process = process;
             
             CancellationTokenSources.TryAdd(call, source);
