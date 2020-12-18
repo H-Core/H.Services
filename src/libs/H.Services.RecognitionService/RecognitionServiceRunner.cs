@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using H.Core;
 using H.Core.Runners;
@@ -22,21 +21,23 @@ namespace H.Services
 
             Add(new AsyncAction("start-recognition", service.StartAsync));
             Add(new AsyncAction("stop-recognition", service.StopAsync));
-            Add(AsyncAction.WithCommand("start-record", async (command, cancellationToken) =>
+            
+            Add(AsyncAction.WithCommand("record", async (command, cancellationToken) =>
             {
                 var format = Enum.TryParse<RecordingFormat>(
-                    command.Arguments.ElementAt(0), 
-                    true, 
-                    out var result)
+                    command.Arguments.ElementAt(0), true, out var result)
                     ? result
                     : RecordingFormat.Mp3;
-                var milliseconds = Convert.ToInt32(command.Arguments.ElementAt(1), CultureInfo.InvariantCulture);
+                var process = command.Process ?? throw new ArgumentException(nameof(command.Process));
                 
-                var bytes = await service.StartRecordAsync(
-                        TimeSpan.FromMilliseconds(milliseconds), format, cancellationToken)
+                using var recording = await service.StartRecordAsync(format, cancellationToken)
                     .ConfigureAwait(false);
+
+                await process.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                await recording.StopAsync(cancellationToken).ConfigureAwait(false);
                 
-                return new Command(string.Empty, bytes);
+                return new Command(string.Empty, recording.Data);
             }));
         }
 

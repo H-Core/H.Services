@@ -65,21 +65,23 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="timeout"></param>
         /// <param name="format"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<byte[]> StartRecordAsync(TimeSpan timeout, RecordingFormat format, CancellationToken cancellationToken = default)
+        public async Task<IRecording> StartRecordAsync(RecordingFormat format, CancellationToken cancellationToken = default)
         {
+            if (format is RecordingFormat.None)
+            {
+                throw new ArgumentException($"Invalid format: {format}");
+            }
+            
             if (InitializeState is not State.Completed)
             {
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
             
-            var recognition = await Recorder.StartWithTimeoutAsync(timeout, format, cancellationToken)
+            return await Recorder.StartAsync(format, cancellationToken)
                 .ConfigureAwait(false);
-
-            return recognition.Data;
         }
 
         /// <summary>

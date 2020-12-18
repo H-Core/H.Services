@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using H.Core;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,6 +29,34 @@ namespace H.Services.IntegrationTests
             }.EnableLogging(cancellationTokenSource);
 
             await recognitionService.Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
+        }
+        
+        [TestMethod]
+        public async Task RecordTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var moduleService = new StaticModuleService(
+                TestModules.CreateDefaultRecorder()
+            );
+            await using var recognitionService = new RecognitionService(moduleService);
+            await using var runnerService = new RunnerService(moduleService, recognitionService);
+
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, recognitionService
+            }.EnableLogging(cancellationTokenSource);
+
+            moduleService.Add(new RecognitionServiceRunner(recognitionService));
+            
+            var process = runnerService.Start(new Command("record", "mp3"), cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            var value = await process.StopAsync(cancellationToken);
+            
+            Assert.AreNotEqual(0, value.Data.Length);
         }
 
         [TestMethod]

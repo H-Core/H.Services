@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
@@ -87,6 +88,58 @@ namespace H.Services
 
         #region Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public IProcess<ICommand> Start(ICommand command, CancellationToken cancellationToken = default)
+        {
+            command = command ?? throw new ArgumentNullException(nameof(command));
+
+            var call = GetCalls(command).First();
+            var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            var process = new Process<ICommand>();
+            call.Command.Process = process;
+            
+            CancellationTokenSources.TryAdd(call, source);
+
+            var task = Task.Run(async () =>
+            {
+                try
+                {
+                    OnCallRunning(call);
+
+                    var result = await call.RunAsync(source.Token).ConfigureAwait(false);
+
+                    OnCallRan(call);
+                    
+                    return result;
+                }
+                catch (OperationCanceledException)
+                {
+                    OnCallCancelled(call);
+
+                    throw;
+                }
+                finally
+                {
+                    if (CancellationTokenSources.TryRemove(call, out var tokenSource))
+                    {
+                        tokenSource.Dispose();
+                    }
+                }
+            }, source.Token);
+
+            process.Initialize(() => task, cancellationToken);
+            
+            Tasks.TryAdd(call, task);
+
+            return process;
+        }
+        
         /// <summary>
         /// 
         /// </summary>
