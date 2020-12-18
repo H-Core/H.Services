@@ -10,7 +10,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class StaticModuleService : ServiceBase, IModuleService
+    public sealed class StaticModuleService : ServiceBase, IModuleService, ICommandProducer
     {
         #region Properties
 

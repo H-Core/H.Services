@@ -16,7 +16,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class DynamicModuleService : ServiceBase, IModuleService
+    public sealed class DynamicModuleService : ServiceBase, IModuleService, ICommandProducer
     {
         #region Properties
 
