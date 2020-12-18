@@ -43,15 +43,14 @@ namespace H.Services.IntegrationTests
                 TestModules.CreateDefaultRecognizer(),
                 TestModules.CreateTelegramRunner()
             );
-            await using var finderService = new FinderService(moduleService);
             await using var runnerService = new RunnerService(
-                finderService,
+                moduleService,
                 moduleService,
                 hookService
             );
             using var exceptions = new IServiceBase[]
             {
-                moduleService, finderService, runnerService, hookService
+                moduleService, runnerService, hookService
             }.EnableLogging(cancellationTokenSource);
 
             await hookService.InitializeAsync(cancellationToken);

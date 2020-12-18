@@ -12,11 +12,10 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class RunnerService : ServiceBase
+    public sealed class RunnerService : FinderService
     {
         #region Properties
 
-        private FinderService FinderService { get; }
         private ConcurrentDictionary<ICall, CancellationTokenSource> CancellationTokenSources { get; } = new();
 
         /// <summary>
@@ -62,11 +61,10 @@ namespace H.Services
 
         #region Constructors
 
-        /// <param name="finderService"></param>
+        /// <param name="moduleServices"></param>
         /// <param name="commandProducers"></param>
-        public RunnerService(FinderService finderService, params ICommandProducer[] commandProducers)
+        public RunnerService(IModuleService[] moduleServices, params ICommandProducer[] commandProducers) : base(moduleServices)
         {
-            FinderService = finderService ?? throw new ArgumentNullException(nameof(finderService));
             commandProducers = commandProducers ?? throw new ArgumentNullException(nameof(commandProducers));
 
             foreach (var producer in commandProducers)
@@ -76,6 +74,13 @@ namespace H.Services
 
                 Dependencies.Add(producer);
             }
+        }
+        
+        /// <param name="moduleService"></param>
+        /// <param name="commandProducers"></param>
+        public RunnerService(IModuleService moduleService, params ICommandProducer[] commandProducers) : 
+            this(new [] {moduleService}, commandProducers)
+        {
         }
 
         #endregion
@@ -94,7 +99,7 @@ namespace H.Services
             command = command ?? throw new ArgumentNullException(nameof(command));
             
             var tasks = new List<Task>();
-            foreach (var call in FinderService.GetCalls(command))
+            foreach (var call in GetCalls(command))
             {
                 var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 CancellationTokenSources.TryAdd(call, source);

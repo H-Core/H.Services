@@ -14,14 +14,9 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class RecognitionService : ServiceBase, ICommandProducer
+    public sealed class RecognitionService : FinderService, ICommandProducer
     {
         #region Properties
-
-        private FinderService FinderService { get; }
-
-        private IRecognizer Recognizer => FinderService.Recognizer;
-        private IRecorder Recorder => FinderService.Recorder;
 
         private ConcurrentDictionary<IStreamingRecognition, bool> Recognitions { get; } = new ();
         
@@ -58,12 +53,9 @@ namespace H.Services
 
         #region Constructors
 
-        /// <param name="finderService"></param>
-        public RecognitionService(FinderService finderService)
+        /// <param name="moduleServices"></param>
+        public RecognitionService(params IModuleService[] moduleServices) : base(moduleServices)
         {
-            FinderService = finderService ?? throw new ArgumentNullException(nameof(finderService));
-            
-            Dependencies.Add(FinderService);
         }
 
         #endregion
@@ -89,9 +81,9 @@ namespace H.Services
 
             return recognition.Data;
         }
-        
+
         /// <summary>
-        /// 
+        /// You must call <see cref="IDisposable.Dispose"/> for recognition.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -105,7 +97,6 @@ namespace H.Services
             using var exceptions = new ExceptionsBag();
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             
-            // TODO: EXCLUDE WRITE WAV HEADER FROM LOGIC.
             var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
                 .ConfigureAwait(false);
             recognition.PartialResultsReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
@@ -130,20 +121,9 @@ namespace H.Services
         public async Task StopAsync(CancellationToken cancellationToken = default)
         {
             await Task.WhenAll(Recognitions
-                .Keys
-                .Select(async recognition => await recognition.StopAsync(cancellationToken).ConfigureAwait(false)))
+                    .Keys
+                    .Select(async recognition => await recognition.StopAsync(cancellationToken).ConfigureAwait(false)))
                 .ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override async ValueTask DisposeAsync()
-        {
-            await StopAsync().ConfigureAwait(false);
-
-            await base.DisposeAsync().ConfigureAwait(false);
         }
 
         #endregion

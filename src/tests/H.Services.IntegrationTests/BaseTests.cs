@@ -7,18 +7,15 @@ namespace H.Services.IntegrationTests
 {
     public static class BaseTests
     {
-        public static async Task Start5SecondsStop1SecondTestAsync(
+        public static async Task Start_Wait5Seconds_Stop_TestAsync(
             this RecognitionService service,
             CancellationToken cancellationToken = default)
         {
-            await service.StartAsync(cancellationToken);
+            using var recognition = await service.StartAsync(cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
-            await service.StopAsync(cancellationToken);
-            
-            // TODO: Wait current commands?
-            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            await recognition.StopAsync(cancellationToken);
         }
         
         public static async Task Start5SecondsStart5SecondsStopTestAsync(
@@ -34,14 +31,6 @@ namespace H.Services.IntegrationTests
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
             await service.StopAsync(cancellationToken);
-
-            try
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-            }
         }
         
         public static async Task StartRecord5SecondsStopRecordTestAsync(
@@ -53,14 +42,6 @@ namespace H.Services.IntegrationTests
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
             await service.RunAsync(new Command("stop-recognition"), cancellationToken);
-
-            try
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-            }
         }
     }
 }

@@ -25,15 +25,14 @@ namespace H.Services.IntegrationTests
                 TestModules.CreateTimerNotifierWithDeskbandDateTimeEach1Seconds(),
                 TestModules.CreateRunnerWithPrintCommand()
             );
-            await using var finderService = new FinderService(moduleService);
             await using var runnerService = new RunnerService(
-                finderService, 
+                moduleService, 
                 moduleService, deskbandService
             );
             
             using var exceptions = new IServiceBase[]
             {
-                moduleService, finderService, runnerService, deskbandService
+                moduleService, runnerService, deskbandService
             }.EnableLogging(cancellationTokenSource);
 
             moduleService.Add(new IpcClientServiceRunner("deskband", deskbandService));

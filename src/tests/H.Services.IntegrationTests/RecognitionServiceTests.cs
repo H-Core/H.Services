@@ -20,21 +20,14 @@ namespace H.Services.IntegrationTests
                 TestModules.CreateDefaultRecorder(),
                 TestModules.CreateDefaultRecognizer()
             );
-            await using var finderService = new FinderService(moduleService);
-            await using var recognitionService = new RecognitionService(finderService);
-            await using var runnerService = new RunnerService(
-                finderService, 
-                moduleService, recognitionService
-            );
+            await using var recognitionService = new RecognitionService(moduleService);
             
             using var exceptions = new IServiceBase[]
             {
-                moduleService, recognitionService, finderService, runnerService
+                moduleService, recognitionService
             }.EnableLogging(cancellationTokenSource);
 
-            moduleService.Add(new RecognitionServiceRunner(recognitionService));
-
-            await runnerService.StartRecord5SecondsStopRecordTestAsync(cancellationToken);
+            await recognitionService.Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
         }
 
         [TestMethod]
@@ -51,7 +44,7 @@ namespace H.Services.IntegrationTests
             );
             using var exceptions = container.EnableLoggingForServices(cancellationTokenSource);
 
-            await container.Resolve<RecognitionService>().Start5SecondsStop1SecondTestAsync(cancellationToken);
+            await container.Resolve<RecognitionService>().Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
         }
     }
 }
