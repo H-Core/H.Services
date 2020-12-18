@@ -6,7 +6,7 @@ namespace H.Services.Core
     /// <summary>
     /// 
     /// </summary>
-    public interface IModuleService : ICommandProducer
+    public interface IModuleService : IServiceBase
     {
         /// <summary>
         /// 
