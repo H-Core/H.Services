@@ -137,6 +137,22 @@ namespace H.Services.IntegrationTests
             };
         }
 
+        public static IRunner CreateLongJobRunnerCommand()
+        {
+            return new Runner
+            {
+                AsyncAction.WithSingleArgument(
+                    "long-job",
+                    async (argument, cancellationToken) =>
+                    {
+                        await Task.Delay(Convert.ToInt32(argument), cancellationToken).ConfigureAwait(false);
+                        
+                        return new Value(argument);
+                    },
+                    "millisecondsDelay"),
+            };
+        }
+
         public static IRunner CreateTelegramRunner()
         {
             return new TelegramRunner

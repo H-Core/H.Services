@@ -12,6 +12,29 @@ namespace H.Services.IntegrationTests
     public class RunnerServiceTests
     {
         [TestMethod]
+        public async Task LongJobTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var moduleService = new StaticModuleService(
+                TestModules.CreateLongJobRunnerCommand()
+            );
+            await using var runnerService = new RunnerService(moduleService);
+
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, runnerService
+            }.EnableLogging(cancellationTokenSource);
+
+            var values = await runnerService.RunAsync(
+                new Command("long-job", "5000"), cancellationToken);
+            
+            Assert.AreEqual(1, values.Length);
+            Assert.AreEqual("5000", values[0].Argument);
+        }
+        
+        [TestMethod]
         public async Task TelegramMessageTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -29,9 +52,6 @@ namespace H.Services.IntegrationTests
 
             await runnerService.RunAsync(
                 new Command("telegram message", nameof(TelegramMessageTest)), cancellationToken);
-            
-            // TODO: bug or?
-            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
         }
         
         [TestMethod]
@@ -55,9 +75,6 @@ namespace H.Services.IntegrationTests
                 {
                     Data = ResourcesUtilities.ReadFileAsBytes("test.mp3"),
                 }), cancellationToken);
-
-            // TODO: bug or?
-            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
         }
 
         [TestMethod]
@@ -84,9 +101,6 @@ namespace H.Services.IntegrationTests
                 {
                     Data = bytes,
                 }), cancellationToken);
-
-            // TODO: bug or?
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         }
 
         [TestMethod]
@@ -108,18 +122,15 @@ namespace H.Services.IntegrationTests
                 moduleService, runnerService
             }.EnableLogging(cancellationTokenSource);
 
-            var recording = await recognitionService.StartRecordAsync(RecordingFormat.Wav, cancellationToken);
+            var recording = await recognitionService.StartRecordAsync(recognitionService.Recognizer.StreamingFormat, cancellationToken);
             var bytes = await recognitionService.StartRecordMp3_5Second_Stop_Async(cancellationToken);
-            await recording.StopAsync(cancellationToken);
-            var preview = await recognitionService.ConvertAsync(recording.Data, cancellationToken);
+            var data = await recording.StopAsync(cancellationToken);
+            var preview = await recognitionService.ConvertAsync(data, cancellationToken);
             await runnerService.RunAsync(
-                new Command("telegram audio", new Value(string.Empty, preview, "412536036")
+                new Command("telegram audio", new Value(string.Empty, preview)
                 {
                     Data = bytes,
                 }), cancellationToken);
-
-            // TODO: bug or?
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         }
     }
 }
