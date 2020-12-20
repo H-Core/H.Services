@@ -32,7 +32,7 @@ namespace H.Services
         /// <param name="shift"></param>
         /// <param name="alt"></param>
         /// <param name="control"></param>
-        public BoundCommand(ICommand command, ConsoleKey key, bool shift, bool alt, bool control)
+        public BoundCommand(ICommand command, ConsoleKey key, bool shift = false, bool alt = false, bool control = false)
         {
             Command = command ?? throw new ArgumentNullException(nameof(command));
             
@@ -47,29 +47,11 @@ namespace H.Services
         /// <param name="shift"></param>
         /// <param name="alt"></param>
         /// <param name="control"></param>
-        public BoundCommand(ICommand command, char key, bool shift, bool alt, bool control)
+        public BoundCommand(ICommand command, char key, bool shift = false, bool alt = false, bool control = false)
         {
             Command = command ?? throw new ArgumentNullException(nameof(command));
 
             ConsoleKeyInfo = new ConsoleKeyInfo(key, (ConsoleKey)key, shift, alt, control);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="key"></param>
-        public BoundCommand(ICommand command, ConsoleKey key) : this(command, key, false, false, false)
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="key"></param>
-        public BoundCommand(ICommand command, char key) : this(command, key, false, false, false)
-        {
         }
 
         #endregion

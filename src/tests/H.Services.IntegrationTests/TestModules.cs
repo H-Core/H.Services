@@ -153,6 +153,21 @@ namespace H.Services.IntegrationTests
             };
         }
 
+        public static IRunner CreateProcessJobRunnerCommand()
+        {
+            return new Runner
+            {
+                new ProcessAction(
+                    "process-job",
+                    async (process, command, cancellationToken) =>
+                    {
+                        await process.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                        return command.Value;
+                    }),
+            };
+        }
+
         public static IRunner CreateTelegramRunner()
         {
             return new TelegramRunner

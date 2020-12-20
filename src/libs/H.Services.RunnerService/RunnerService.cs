@@ -72,11 +72,15 @@ namespace H.Services
             {
                 producer.CommandReceived += OnCommandReceived;
                 producer.AsyncCommandReceived += OnAsyncCommandReceived;
+                if (producer is IProcessCommandProducer processCommandProducer)
+                {
+                    processCommandProducer.ProcessCommandReceived += OnProcessCommandReceived;
+                }
 
                 Dependencies.Add(producer);
             }
         }
-        
+
         /// <param name="moduleService"></param>
         /// <param name="commandProducers"></param>
         public RunnerService(IModuleService moduleService, params ICommandProducer[] commandProducers) : 
@@ -288,6 +292,23 @@ namespace H.Services
             }
 
             return Value.Empty;
+        }
+
+        private Task<IProcess<IValue>> OnProcessCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Task.FromResult(Start(command, cancellationToken));
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception exception)
+            {
+                OnExceptionOccurred(exception);
+            }
+
+            return Task.FromResult<IProcess<IValue>>(new Process<IValue>());
         }
 
         #endregion

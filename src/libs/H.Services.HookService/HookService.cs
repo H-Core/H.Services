@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
@@ -12,7 +13,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class HookService : ServiceBase, ICommandProducer, IEnumerable<BoundCommand>
+    public sealed class HookService : ServiceBase, ICommandProducer, IProcessCommandProducer, IEnumerable<BoundCommand>
     {
         #region Properties
 
@@ -31,7 +32,12 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<string>? CombinationCaught;
+        public event EventHandler<string>? UpCombinationCaught;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<string>? DownCombinationCaught;
 
         /// <summary>
         /// 
@@ -42,17 +48,31 @@ namespace H.Services
         /// 
         /// </summary>
         public event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public event AsyncEventHandler<ICommand, IProcess<IValue>>? ProcessCommandReceived;
 
         private void OnCommandReceived(ICommand value)
         {
             CommandReceived?.Invoke(this, value);
         }
         
-        private void OnCombinationCaught(string value)
+        private void OnUpCombinationCaught(string value)
         {
-            CombinationCaught?.Invoke(this, value);
+            UpCombinationCaught?.Invoke(this, value);
         }
 
+        private void OnDownCombinationCaught(string value)
+        {
+            DownCombinationCaught?.Invoke(this, value);
+        }
+
+        private Task<IProcess<IValue>[]> OnProcessCommandReceivedAsync(ICommand value, CancellationToken cancellationToken = default)
+        {
+            return ProcessCommandReceived.InvokeAsync(this, value, cancellationToken);
+        }
 
         #endregion
 
@@ -66,13 +86,26 @@ namespace H.Services
             Disposables.Add(MouseHook);
             Disposables.Add(KeyboardHook);
 
+            KeyboardHook.KeyDown += (_, args) =>
+            {
+                var combination = new KeysCombination(args.Key, args.IsCtrlPressed, args.IsShiftPressed, args.IsAltPressed);
+                var info = new ConsoleKeyInfo(
+                    (char)args.Key, (ConsoleKey)args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
+
+                OnDownCombinationCaught(combination.ToString());
+
+                if (BoundCommands.TryGetValue(info, out var command))
+                {
+                    OnCommandReceived(command.Command);
+                }
+            };
             KeyboardHook.KeyUp += (_, args) =>
             {
                 var combination = new KeysCombination(args.Key, args.IsCtrlPressed, args.IsShiftPressed, args.IsAltPressed);
                 var info = new ConsoleKeyInfo(
                     (char)args.Key, (ConsoleKey)args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
 
-                OnCombinationCaught(combination.ToString());
+                OnUpCombinationCaught(combination.ToString());
 
                 if (BoundCommands.TryGetValue(info, out var command))
                 {
@@ -108,6 +141,40 @@ namespace H.Services
             command = command ?? throw new ArgumentNullException(nameof(command));
             
             BoundCommands.Add(command.ConsoleKeyInfo, command);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        public void While(BoundCommand command)
+        {
+            var process = (IProcess<IValue>?)null;
+            KeyboardHook.KeyDown += async (_, args) =>
+            {
+                var info = new ConsoleKeyInfo(
+                    (char) args.Key, (ConsoleKey) args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
+
+                if (info == command.ConsoleKeyInfo &&
+                    process == null)
+                {
+                    var processes = await OnProcessCommandReceivedAsync(command.Command)
+                        .ConfigureAwait(false);
+                    process = processes.First();
+                }
+            };
+            KeyboardHook.KeyUp += async (_, args) =>
+            {
+                var info = new ConsoleKeyInfo(
+                    (char)args.Key, (ConsoleKey)args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
+
+                if (info == command.ConsoleKeyInfo &&
+                    process != null)
+                {
+                    await process.StopAsync().ConfigureAwait(false);
+                    process = null;
+                }
+            };
         }
         
         ///// <summary>

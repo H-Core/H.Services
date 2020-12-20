@@ -35,34 +35,40 @@ namespace H.Services.IntegrationTests
                     return Task.FromResult<IValue>(Value.Empty);
                 };
             }
-            if (service is HookService hookService)
+            switch (service)
             {
-                hookService.CombinationCaught += (_, value) =>
-                {
-                    Console.WriteLine($"{nameof(hookService.CombinationCaught)}: {value}");
-                };
-            }
-            if (service is RecognitionService recognitionService)
-            {
-                recognitionService.PreviewCommandReceived += (_, value) =>
-                {
-                    Console.WriteLine($"{nameof(recognitionService.PreviewCommandReceived)}: {value}");
-                };
-            }
-            if (service is RunnerService runnerService)
-            {
-                runnerService.CallRunning += (_, call) =>
-                {
-                    Console.WriteLine($"{nameof(runnerService.CallRunning)}: {call}");
-                };
-                runnerService.CallRan += (_, call) =>
-                {
-                    Console.WriteLine($"{nameof(runnerService.CallRan)}: {call}");
-                };
-                runnerService.CallCancelled += (_, call) =>
-                {
-                    Console.WriteLine($"{nameof(runnerService.CallCancelled)}: {call}");
-                };
+                case HookService hookService:
+                    hookService.UpCombinationCaught += (_, value) =>
+                    {
+                        Console.WriteLine($"{nameof(hookService.UpCombinationCaught)}: {value}");
+                    };
+                    hookService.DownCombinationCaught += (_, value) =>
+                    {
+                        Console.WriteLine($"{nameof(hookService.DownCombinationCaught)}: {value}");
+                    };
+                    break;
+                
+                case RecognitionService recognitionService:
+                    recognitionService.PreviewCommandReceived += (_, value) =>
+                    {
+                        Console.WriteLine($"{nameof(recognitionService.PreviewCommandReceived)}: {value}");
+                    };
+                    break;
+                
+                case RunnerService runnerService:
+                    runnerService.CallRunning += (_, call) =>
+                    {
+                        Console.WriteLine($"{nameof(runnerService.CallRunning)}: {call}");
+                    };
+                    runnerService.CallRan += (_, call) =>
+                    {
+                        Console.WriteLine($"{nameof(runnerService.CallRan)}: {call}");
+                    };
+                    runnerService.CallCancelled += (_, call) =>
+                    {
+                        Console.WriteLine($"{nameof(runnerService.CallCancelled)}: {call}");
+                    };
+                    break;
             }
         }
 
