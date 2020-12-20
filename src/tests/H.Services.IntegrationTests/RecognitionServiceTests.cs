@@ -83,7 +83,7 @@ namespace H.Services.IntegrationTests
             var process = runnerService.Start(new Command("send-telegram-voice-message"), cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
-
+            
             var value = await process.StopAsync(cancellationToken);
 
             Assert.AreNotEqual(0, value.Data.Length);

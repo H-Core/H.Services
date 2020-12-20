@@ -32,7 +32,20 @@ namespace H.Services.IntegrationTests
 
             await service.StopAsync(cancellationToken);
         }
-        
+
+        public static async Task<byte[]> StartRecordMp3_5Second_Stop_Async(
+            this RecognitionService service,
+            CancellationToken cancellationToken = default)
+        {
+            var recording = await service.StartRecordAsync(RecordingFormat.Mp3, cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await recording.StopAsync(cancellationToken);
+            
+            return recording.Data;
+        }
+
         public static async Task StartRecord5SecondsStopRecordTestAsync(
             this RunnerService service,
             CancellationToken cancellationToken = default)
