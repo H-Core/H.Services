@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
 
@@ -64,7 +65,7 @@ namespace H.Services
                 {
                     Data = recordingMp3.Data,
                 };
-                await RunAsync(new Command("telegram voice", value), cancellationToken).ConfigureAwait(false);
+                await RunAsync(new Command("telegram audio", value), cancellationToken).ConfigureAwait(false);
 
                 return value;
             }, "to?"));
