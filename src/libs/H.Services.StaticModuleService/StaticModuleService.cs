@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
@@ -31,16 +32,19 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event AsyncEventHandler<ICommand>? AsyncCommandReceived;
+        public event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
 
         private void OnCommandReceived(ICommand value)
         {
             CommandReceived?.Invoke(this, value);
         }
 
-        private async Task OnAsyncCommandReceivedAsync(ICommand value, CancellationToken cancellationToken = default)
+        private async Task<IValue> OnAsyncCommandReceivedAsync(ICommand value, CancellationToken cancellationToken = default)
         {
-            await AsyncCommandReceived.InvokeAsync(this, value, cancellationToken).ConfigureAwait(false);
+            var values = await AsyncCommandReceived.InvokeAsync(this, value, cancellationToken)
+                .ConfigureAwait(false);
+
+            return values.FirstOrDefault(v => !v.IsEmpty) ?? Value.Empty;
         }
 
         #endregion

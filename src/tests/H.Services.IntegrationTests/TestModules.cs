@@ -140,9 +140,10 @@ namespace H.Services.IntegrationTests
         public static IRunner CreateTelegramRunner()
         {
             return new TelegramRunner
-            { 
-                Token = "1492150165:AAEq8RUEX1YOKjrMgMA8I-HHxrAy7dSmCvY",
-                UserId = 482553595,
+            {
+                Token = Environment.GetEnvironmentVariable("TELEGRAM_HOMECENTER_BOT_TOKEN")
+                        ?? throw new AssertInconclusiveException("TELEGRAM_HOMECENTER_BOT_TOKEN environment variable is not found."),
+                DefaultUserId = 482553595,
             };
         }
     }

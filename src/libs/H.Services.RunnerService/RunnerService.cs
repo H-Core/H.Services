@@ -146,12 +146,18 @@ namespace H.Services
         /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public async Task RunAsync(ICommand command, CancellationToken cancellationToken = default)
+        public async Task<IValue[]> RunAsync(ICommand command, CancellationToken cancellationToken = default)
         {
             command = command ?? throw new ArgumentNullException(nameof(command));
             
-            var tasks = new List<Task>();
-            foreach (var call in GetCalls(command))
+            var tasks = new List<Task<IValue>>();
+            var calls = GetCalls(command).ToArray();
+            if (!calls.Any())
+            {
+                throw new ArgumentException($"Command is not supported: {command}");
+            }
+            
+            foreach (var call in calls)
             {
                 var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 CancellationTokenSources.TryAdd(call, source);
@@ -162,9 +168,11 @@ namespace H.Services
                     {
                         OnCallRunning(call);
 
-                        await call.RunAsync(source.Token).ConfigureAwait(false);
+                        var value = await call.RunAsync(source.Token).ConfigureAwait(false);
 
                         OnCallRan(call);
+
+                        return value;
                     }
                     catch (OperationCanceledException)
                     {
@@ -186,7 +194,7 @@ namespace H.Services
                 tasks.Add(task);
             }
             
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            return await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -263,11 +271,13 @@ namespace H.Services
             }
         }
 
-        private async Task OnAsyncCommandReceived(object _, ICommand value, CancellationToken cancellationToken)
+        private async Task<IValue> OnAsyncCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
         {
             try
             {
-                await RunAsync(value, cancellationToken).ConfigureAwait(false);
+                var values = await RunAsync(command, cancellationToken).ConfigureAwait(false);
+
+                return values.FirstOrDefault(value => !value.IsEmpty) ?? Value.Empty;
             }
             catch (OperationCanceledException)
             {
@@ -276,6 +286,8 @@ namespace H.Services
             {
                 OnExceptionOccurred(exception);
             }
+
+            return Value.Empty;
         }
 
         #endregion

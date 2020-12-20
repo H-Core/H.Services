@@ -18,7 +18,7 @@ namespace H.Services
             actionName = actionName ?? throw new ArgumentNullException(nameof(actionName));
             service = service ?? throw new ArgumentNullException(nameof(service));
 
-            Add(new AsyncAction(actionName, service.WriteAsync, "value"));
+            Add(AsyncAction.WithSingleArgument(actionName, service.WriteAsync, "value"));
         }
 
         #endregion

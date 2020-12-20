@@ -37,7 +37,7 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event AsyncEventHandler<ICommand>? AsyncCommandReceived;
+        public event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
 
         private void OnPreviewCommandReceived(ICommand value)
         {
@@ -85,6 +85,54 @@ namespace H.Services
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<string> ConvertAsync(byte[] bytes, CancellationToken cancellationToken = default)
+        {
+            bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
+
+            if (InitializeState is not State.Completed)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            return await Recognizer.ConvertOverStreamingRecognition(bytes, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// You must call <see cref="IDisposable.Dispose"/> for recognition.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IStreamingRecognition> StartConvertAsync(CancellationToken cancellationToken = default)
+        {
+            if (InitializeState is not State.Completed)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            using var exceptions = new ExceptionsBag();
+            exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
+
+            var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
+                .ConfigureAwait(false);
+            recognition.Stopped += (_, _) =>
+            {
+                Recognitions.TryRemove(recognition, out _);
+
+                recognition.Dispose();
+            };
+
+            Recognitions.TryAdd(recognition, true);
+
+            return recognition;
+        }
+
+        /// <summary>
         /// You must call <see cref="IDisposable.Dispose"/> for recognition.
         /// </summary>
         /// <param name="cancellationToken"></param>
@@ -101,11 +149,11 @@ namespace H.Services
             
             var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
                 .ConfigureAwait(false);
-            recognition.PartialResultsReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
-            recognition.FinalResultsReceived += (_, value) => OnCommandReceived(Command.Parse(value));
-            recognition.Stopped += (_, _) =>
+            recognition.PreviewReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
+            recognition.Stopped += (_, value) =>
             {
-                Recognitions.TryRemove(recognition, out _);
+                OnCommandReceived(Command.Parse(value));
+                Recognitions.TryRemove(recognition, out var _);
                 
                 recognition.Dispose();
             };

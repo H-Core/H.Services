@@ -41,7 +41,7 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event AsyncEventHandler<ICommand>? AsyncCommandReceived;
+        public event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
 
         private void OnCommandReceived(ICommand value)
         {

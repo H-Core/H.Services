@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using H.Core;
 using H.Core.Utilities;
 using H.Services.Core;
 
@@ -31,7 +32,7 @@ namespace H.Services.IntegrationTests
                 {
                     Console.WriteLine($"{nameof(commandProducer.AsyncCommandReceived)}: {value}");
 
-                    return Task.CompletedTask;
+                    return Task.FromResult<IValue>(Value.Empty);
                 };
             }
             if (service is HookService hookService)

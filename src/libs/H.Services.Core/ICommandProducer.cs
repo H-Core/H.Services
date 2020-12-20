@@ -11,7 +11,7 @@ namespace H.Services.Core
         /// <summary>
         /// 
         /// </summary>
-        event AsyncEventHandler<ICommand>? AsyncCommandReceived;
+        event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
         
         /// <summary>
         /// 

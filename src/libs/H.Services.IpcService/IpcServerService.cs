@@ -40,7 +40,7 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event AsyncEventHandler<ICommand>? AsyncCommandReceived;
+        public event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
         
         /// <summary>
         /// Invoked whenever a client connects to the server.

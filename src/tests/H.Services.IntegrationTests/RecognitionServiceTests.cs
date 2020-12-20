@@ -45,7 +45,7 @@ namespace H.Services.IntegrationTests
 
             using var exceptions = new IServiceBase[]
             {
-                moduleService, recognitionService
+                moduleService, recognitionService, runnerService
             }.EnableLogging(cancellationTokenSource);
 
             moduleService.Add(new RecognitionServiceRunner(recognitionService));
@@ -56,6 +56,36 @@ namespace H.Services.IntegrationTests
 
             var value = await process.StopAsync(cancellationToken);
             
+            Assert.AreNotEqual(0, value.Data.Length);
+        }
+
+        [TestMethod]
+        public async Task SendTelegramVoiceMessageTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var moduleService = new StaticModuleService(
+                TestModules.CreateDefaultRecorder(),
+                TestModules.CreateDefaultRecognizer(),
+                TestModules.CreateTelegramRunner()
+            );
+            await using var recognitionService = new RecognitionService(moduleService);
+            await using var runnerService = new RunnerService(moduleService, recognitionService);
+
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, recognitionService, runnerService
+            }.EnableLogging(cancellationTokenSource);
+
+            moduleService.Add(new RecognitionServiceRunner(recognitionService));
+
+            var process = runnerService.Start(new Command("send-telegram-voice-message"), cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            var value = await process.StopAsync(cancellationToken);
+
             Assert.AreNotEqual(0, value.Data.Length);
         }
 
