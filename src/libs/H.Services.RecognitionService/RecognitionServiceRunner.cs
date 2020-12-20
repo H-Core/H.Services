@@ -52,17 +52,17 @@ namespace H.Services
 
                 using var recognition = await service.StartConvertAsync(cancellationToken)
                     .ConfigureAwait(false);
-                using var recordingMp3 = await service.StartRecordAsync(RecordingFormat.Mp3, cancellationToken)
+                using var recording = await service.StartRecordAsync(RecordingFormat.Mp3, cancellationToken)
                     .ConfigureAwait(false);
 
                 await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-                await recordingMp3.StopAsync(cancellationToken).ConfigureAwait(false);
+                var bytes = await recording.StopAsync(cancellationToken).ConfigureAwait(false);
                 var result = await recognition.StopAsync(cancellationToken).ConfigureAwait(false);
 
                 var value = new Value(to ?? string.Empty, result)
                 {
-                    Data = recordingMp3.Data,
+                    Data = bytes,
                 };
                 await RunAsync(new Command("telegram audio", value), cancellationToken).ConfigureAwait(false);
 

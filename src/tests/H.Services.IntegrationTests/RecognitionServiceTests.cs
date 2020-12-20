@@ -71,7 +71,7 @@ namespace H.Services.IntegrationTests
                 TestModules.CreateTelegramRunner()
             );
             await using var recognitionService = new RecognitionService(moduleService);
-            await using var runnerService = new RunnerService(moduleService, recognitionService);
+            await using var runnerService = new RunnerService(moduleService, moduleService, recognitionService);
 
             using var exceptions = new IServiceBase[]
             {
