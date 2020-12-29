@@ -55,6 +55,36 @@ namespace H.Services.IntegrationTests
         }
 
         [TestMethod]
+        public async Task SelectTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var hookService = new HookService
+            {
+                new (new Command("select"), ConsoleKey.S, isProcessing: true),
+            };
+            await using var moduleService = new StaticModuleService(
+                TestModules.CreateSelectRunner()
+            );
+            await using var runnerService = new RunnerService(
+                moduleService,
+                moduleService,
+                hookService
+            );
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, runnerService, hookService
+            }.EnableLogging(cancellationTokenSource);
+
+            await hookService.InitializeAsync(cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await runnerService.WaitAllAsync(cancellationToken);
+        }
+
+        [TestMethod]
         public async Task TelegramTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));

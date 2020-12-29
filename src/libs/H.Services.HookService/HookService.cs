@@ -87,6 +87,18 @@ namespace H.Services
             Disposables.Add(MouseHook);
             Disposables.Add(KeyboardHook);
 
+            MouseHook.MouseDown += (_, args) =>
+            {
+                var combination = KeysCombination.FromSpecialData(args.SpecialButton);
+
+                OnDownCombinationCaught(combination.ToString());
+            };
+            MouseHook.MouseUp += (_, args) =>
+            {
+                var combination = KeysCombination.FromSpecialData(args.SpecialButton);
+
+                OnUpCombinationCaught(combination.ToString());
+            };
             KeyboardHook.KeyDown += async (_, args) =>
             {
                 try

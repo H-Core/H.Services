@@ -200,5 +200,10 @@ namespace H.Services.IntegrationTests
         {
             return new TorrentRunner();
         }
+
+        public static IRunner CreateSelectRunner()
+        {
+            return new SelectRunner();
+        }
     }
 }
