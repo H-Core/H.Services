@@ -99,13 +99,13 @@ namespace H.Services
         /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public IProcess<IValue> Start(ICommand command, CancellationToken cancellationToken = default)
+        public IProcess<ICommand> Start(ICommand command, CancellationToken cancellationToken = default)
         {
             command = command ?? throw new ArgumentNullException(nameof(command));
 
             var call = GetCalls(command).First();
             var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            var process = new Process<IValue>();
+            var process = new Process<ICommand>();
             
             CancellationTokenSources.TryAdd(call, source);
 
@@ -136,12 +136,7 @@ namespace H.Services
                 }
             }, source.Token);
 
-            process.Initialize(async () =>
-            {
-                var output = await task.ConfigureAwait(false);
-
-                return output.Output;
-            }, cancellationToken);
+            process.Initialize(() => task, cancellationToken);
             
             Tasks.TryAdd(call, task);
 
@@ -300,7 +295,7 @@ namespace H.Services
             return Value.Empty;
         }
 
-        private Task<IProcess<IValue>> OnProcessCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
+        private Task<IProcess<ICommand>> OnProcessCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
         {
             try
             {
@@ -314,7 +309,7 @@ namespace H.Services
                 OnExceptionOccurred(exception);
             }
 
-            return Task.FromResult<IProcess<IValue>>(new Process<IValue>());
+            return Task.FromResult<IProcess<ICommand>>(new Process<ICommand>());
         }
 
         #endregion

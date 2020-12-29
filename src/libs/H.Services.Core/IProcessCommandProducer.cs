@@ -10,6 +10,6 @@ namespace H.Services.Core
         /// <summary>
         /// 
         /// </summary>
-        event AsyncEventHandler<ICommand, IProcess<IValue>>? ProcessCommandReceived;
+        event AsyncEventHandler<ICommand, IProcess<ICommand>>? ProcessCommandReceived;
     }
 }

@@ -56,7 +56,7 @@ namespace H.Services.IntegrationTests
 
             var value = await process.StopAsync(cancellationToken);
             
-            Assert.AreNotEqual(0, value.Data.Length);
+            Assert.AreNotEqual(0, value.Output.Data.Length);
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace H.Services.IntegrationTests
             
             var value = await process.StopAsync(cancellationToken);
 
-            Assert.AreNotEqual(0, value.Data.Length);
+            Assert.AreNotEqual(0, value.Output.Data.Length);
         }
 
         [TestMethod]

@@ -14,7 +14,7 @@
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.14.6" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.19.1" />
     <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.19.1" />
-    <PackageReference Include="H.Runners.TelegramRunner" Version="0.18.4" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.19.2" />
     <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.19.1" />
   </ItemGroup>
 
