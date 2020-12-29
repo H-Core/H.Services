@@ -14,6 +14,11 @@ namespace H.Services
         /// 
         /// </summary>
         public ICommand Command { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsProcessing { get; set; }
         
         /// <summary>
         /// 
@@ -32,13 +37,20 @@ namespace H.Services
         /// <param name="shift"></param>
         /// <param name="alt"></param>
         /// <param name="control"></param>
-        public BoundCommand(ICommand command, ConsoleKey key, bool shift = false, bool alt = false, bool control = false)
+        /// <param name="isProcessing"></param>
+        public BoundCommand(
+            ICommand command, 
+            ConsoleKey key, 
+            bool shift = false, 
+            bool alt = false, 
+            bool control = false,
+            bool isProcessing = false)
         {
             Command = command ?? throw new ArgumentNullException(nameof(command));
-            
+            IsProcessing = isProcessing;
             ConsoleKeyInfo = new ConsoleKeyInfo((char)key, key, shift, alt, control);
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -47,10 +59,15 @@ namespace H.Services
         /// <param name="shift"></param>
         /// <param name="alt"></param>
         /// <param name="control"></param>
-        public BoundCommand(ICommand command, char key, bool shift = false, bool alt = false, bool control = false)
+        /// <param name="isProcessing"></param>
+        public BoundCommand(
+            ICommand command, 
+            char key, 
+            bool shift = false, bool alt = false, bool control = false, 
+            bool isProcessing = false)
         {
             Command = command ?? throw new ArgumentNullException(nameof(command));
-
+            IsProcessing = isProcessing;
             ConsoleKeyInfo = new ConsoleKeyInfo(key, (ConsoleKey)key, shift, alt, control);
         }
 

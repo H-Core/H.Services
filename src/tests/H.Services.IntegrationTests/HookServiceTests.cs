@@ -32,7 +32,10 @@ namespace H.Services.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            await using var hookService = new HookService();
+            await using var hookService = new HookService
+            {
+                new (new Command("process-job"), ConsoleKey.K, isProcessing: true),
+            };
             await using var moduleService = new StaticModuleService(
                 TestModules.CreateProcessJobRunnerCommand()
             );
@@ -47,8 +50,6 @@ namespace H.Services.IntegrationTests
             }.EnableLogging(cancellationTokenSource);
 
             await hookService.InitializeAsync(cancellationToken);
-            
-            hookService.While(new BoundCommand(new Command("process-job"), ConsoleKey.K));
             
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         }
@@ -92,7 +93,10 @@ namespace H.Services.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            await using var hookService = new HookService();
+            await using var hookService = new HookService
+            {
+                new (new Command("send-telegram-voice-message"), ConsoleKey.L, alt: true, isProcessing: true),
+            };
             await using var moduleService = new StaticModuleService(
                 TestModules.CreateDefaultRecorder(),
                 TestModules.CreateDefaultRecognizer(),
@@ -113,8 +117,6 @@ namespace H.Services.IntegrationTests
 
             moduleService.Add(new RecognitionServiceRunner(recognitionService));
             
-            hookService.While(new BoundCommand(new Command("send-telegram-voice-message"), ConsoleKey.L, alt: true));
-
             await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken);
         }
     }
