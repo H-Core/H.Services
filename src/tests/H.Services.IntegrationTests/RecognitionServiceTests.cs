@@ -105,5 +105,26 @@ namespace H.Services.IntegrationTests
 
             await container.Resolve<RecognitionService>().Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
         }
+
+        [TestMethod]
+        public async Task RepeatTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var container = IoCTests.CreateContainer(
+                TestModules.CreateDefaultRecorder(),
+                TestModules.CreateDefaultRecognizer(),
+                TestModules.CreateDefaultSynthesizer(),
+                TestModules.CreateDefaultPlayer(),
+                new IntegrationRunner(),
+                TestModules.CreateAliasRunnerCommand("say", "повтори", "повторить", "скажи")
+            );
+            using var exceptions = container.EnableLoggingForServices(cancellationTokenSource);
+
+            await container.Resolve<RecognitionService>().Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+        }
     }
 }

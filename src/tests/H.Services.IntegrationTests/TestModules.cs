@@ -11,6 +11,7 @@ using H.Notifiers;
 using H.Recognizers;
 using H.Recorders;
 using H.Runners;
+using H.Synthesizers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Services.IntegrationTests
@@ -33,6 +34,16 @@ namespace H.Services.IntegrationTests
             {
                 Token = "XZS4M3BUYV5LBMEWJKAGJ6HCPWZ5IDGY"
             };
+        }
+
+        public static IRunner CreateDefaultPlayer()
+        {
+            return new NAudioPlayer();
+        }
+
+        public static IRunner CreateDefaultSynthesizer()
+        {
+            return new YandexSynthesizer();
         }
 
         public static INotifier CreateTimerNotifierWithPrintHelloWorldEach3Seconds()
