@@ -7,10 +7,12 @@ using H.Core.Notifiers;
 using H.Core.Recognizers;
 using H.Core.Recorders;
 using H.Core.Runners;
+using H.Core.Searchers;
 using H.Notifiers;
 using H.Recognizers;
 using H.Recorders;
 using H.Runners;
+using H.Searchers;
 using H.Synthesizers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -44,6 +46,11 @@ namespace H.Services.IntegrationTests
         public static IRunner CreateDefaultSynthesizer()
         {
             return new YandexSynthesizer();
+        }
+
+        public static ISearcher CreateDefaultSearcher()
+        {
+            return new GoogleSearcher();
         }
 
         public static INotifier CreateTimerNotifierWithPrintHelloWorldEach3Seconds()
@@ -187,6 +194,11 @@ namespace H.Services.IntegrationTests
                         ?? throw new AssertInconclusiveException("TELEGRAM_HOMECENTER_BOT_TOKEN environment variable is not found."),
                 DefaultUserId = 482553595,
             };
+        }
+
+        public static IRunner CreateTorrentRunner()
+        {
+            return new TorrentRunner();
         }
     }
 }

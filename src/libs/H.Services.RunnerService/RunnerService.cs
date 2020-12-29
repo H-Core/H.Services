@@ -221,6 +221,18 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task WaitAllAsync(CancellationToken cancellationToken = default)
+        {
+            using var registration = cancellationToken.Register(CancelAll);
+
+            await Task.WhenAll(Tasks.Values).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void CancelAll()
         {
             foreach (var call in Tasks.Keys)

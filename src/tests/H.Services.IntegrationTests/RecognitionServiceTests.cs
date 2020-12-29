@@ -124,7 +124,36 @@ namespace H.Services.IntegrationTests
 
             await container.Resolve<RecognitionService>().Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            var runnerService = container.Resolve<RunnerService>();
+            await runnerService.WaitAllAsync(cancellationToken);
         }
+
+#if NET48
+        [TestMethod]
+        public async Task TorrentTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var container = IoCTests.CreateContainer(
+                TestModules.CreateDefaultRecorder(),
+                TestModules.CreateDefaultRecognizer(),
+                TestModules.CreateDefaultSynthesizer(),
+                TestModules.CreateDefaultPlayer(),
+                TestModules.CreateDefaultSearcher(),
+                TestModules.CreateTorrentRunner(),
+                TestModules.CreateRunnerWithPrintCommand(),
+                new IntegrationRunner(),
+                TestModules.CreateAliasRunnerCommand("torrent", "смотреть")
+            );
+            using var exceptions = container.EnableLoggingForServices(cancellationTokenSource);
+
+            var recognitionService = container.Resolve<RecognitionService>();
+            await recognitionService.Start_Wait5Seconds_Stop_TestAsync(cancellationToken);
+
+            var runnerService = container.Resolve<RunnerService>();
+            await runnerService.WaitAllAsync(cancellationToken);
+        }
+#endif
     }
 }

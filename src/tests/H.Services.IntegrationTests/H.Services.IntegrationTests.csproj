@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0</TargetFrameworks>
+    <TargetFrameworks>net4.8;net5.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,11 +11,13 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
     <PackageReference Include="H.IO" Version="1.0.1" />
-    <PackageReference Include="H.Notifiers.RssNotifier" Version="0.14.6" />
+    <PackageReference Include="H.Notifiers.RssNotifier" Version="0.19.4" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.19.1" />
-    <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.19.3" />
-    <PackageReference Include="H.Runners.TelegramRunner" Version="0.19.3" />
-    <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.19.1" />
+    <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.19.5" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.19.4" />
+    <PackageReference Include="H.Runners.TorrentRunner" Version="0.19.4" />
+    <PackageReference Include="H.Searchers.WebSearchers" Version="0.19.5" />
+    <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.19.4" />
   </ItemGroup>
 
   <ItemGroup>
