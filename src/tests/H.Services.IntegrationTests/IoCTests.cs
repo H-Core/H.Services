@@ -39,7 +39,6 @@ namespace H.Services.IntegrationTests
             }
             
             AddService<StaticModuleService>(builder);
-            AddService<FinderService>(builder);
             AddService<RecognitionService>(builder);
             AddService<RunnerService>(builder)
                 .UsingConstructor(typeof(IModuleService[]), typeof(ICommandProducer[]));

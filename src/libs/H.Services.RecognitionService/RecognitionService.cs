@@ -14,7 +14,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class RecognitionService : FinderService, ICommandProducer
+    public sealed class RecognitionService : ConsumerService, ICommandProducer
     {
         #region Properties
 

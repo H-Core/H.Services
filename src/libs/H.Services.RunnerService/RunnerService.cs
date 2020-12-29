@@ -13,7 +13,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class RunnerService : FinderService
+    public sealed class RunnerService : ConsumerService
     {
         #region Properties
 
