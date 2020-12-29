@@ -86,15 +86,15 @@ namespace H.Services.IntegrationTests
                 "run",
                 command => runner.Run(
                     new Command(
-                        command.Value.Arguments.ElementAt(0),
-                        command.Value.Arguments.Skip(1).ToArray())),
+                        command.Input.Arguments.ElementAt(0),
+                        command.Input.Arguments.Skip(1).ToArray())),
                 "command"));
             runner.Add(AsyncAction.WithCommand(
                 "run-async", 
                 (command, token) => runner.RunAsync(
                     new Command(
-                        command.Value.Arguments.ElementAt(0), 
-                        command.Value.Arguments.Skip(1).ToArray()), 
+                        command.Input.Arguments.ElementAt(0), 
+                        command.Input.Arguments.Skip(1).ToArray()), 
                     token), 
                 "command"));
             
@@ -108,7 +108,7 @@ namespace H.Services.IntegrationTests
             {
                 runner.Add(SyncAction.WithCommand(
                     alias,
-                    command => runner.Run(new Command(name, command.Value.Arguments)),
+                    command => runner.Run(new Command(name, command.Input.Arguments)),
                     "arguments"));
             }
 
@@ -163,7 +163,7 @@ namespace H.Services.IntegrationTests
                     {
                         await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-                        return command.Value;
+                        return command.Input;
                     }),
             };
         }

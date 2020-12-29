@@ -68,9 +68,9 @@ namespace H.Services
         /// <param name="format"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IRecording> StartRecordAsync(RecordingFormat format, CancellationToken cancellationToken = default)
+        public async Task<IRecording> StartRecordAsync(AudioFormat format, CancellationToken cancellationToken = default)
         {
-            if (format is RecordingFormat.None)
+            if (format is AudioFormat.None)
             {
                 throw new ArgumentException($"Invalid format: {format}");
             }

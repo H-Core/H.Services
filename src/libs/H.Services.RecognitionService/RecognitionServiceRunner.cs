@@ -24,10 +24,10 @@ namespace H.Services
             
             Add(new ProcessAction("record", async (process, command, cancellationToken) =>
             {
-                var format = Enum.TryParse<RecordingFormat>(
-                    command.Value.Arguments.ElementAt(0), true, out var result)
+                var format = Enum.TryParse<AudioFormat>(
+                    command.Input.Arguments.ElementAt(0), true, out var result)
                     ? result
-                    : RecordingFormat.Mp3;
+                    : AudioFormat.Mp3;
                 
                 using var recording = await service.StartRecordAsync(format, cancellationToken)
                     .ConfigureAwait(false);
@@ -40,7 +40,7 @@ namespace H.Services
             }));
             Add(AsyncAction.WithCommand("convert-audio-to-text", async (command, cancellationToken) =>
             {
-                var text = await service.ConvertAsync(command.Value.Data, cancellationToken)
+                var text = await service.ConvertAsync(command.Input.Data, cancellationToken)
                     .ConfigureAwait(false);
 
                 return new Value(text);
@@ -48,11 +48,11 @@ namespace H.Services
             
             Add(new ProcessAction("send-telegram-voice-message", async (process, command, cancellationToken) =>
             {
-                var to = command.Value.Arguments.ElementAtOrDefault(0);
+                var to = command.Input.Arguments.ElementAtOrDefault(0);
 
                 using var recognition = await service.StartConvertAsync(cancellationToken)
                     .ConfigureAwait(false);
-                using var recording = await service.StartRecordAsync(RecordingFormat.Mp3, cancellationToken)
+                using var recording = await service.StartRecordAsync(AudioFormat.Mp3, cancellationToken)
                     .ConfigureAwait(false);
 
                 await process.WaitAsync(cancellationToken).ConfigureAwait(false);

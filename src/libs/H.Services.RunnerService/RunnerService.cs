@@ -136,7 +136,12 @@ namespace H.Services
                 }
             }, source.Token);
 
-            process.Initialize(() => task, cancellationToken);
+            process.Initialize(async () =>
+            {
+                var output = await task.ConfigureAwait(false);
+
+                return output.Output;
+            }, cancellationToken);
             
             Tasks.TryAdd(call, task);
 
@@ -150,11 +155,11 @@ namespace H.Services
         /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public async Task<IValue[]> RunAsync(ICommand command, CancellationToken cancellationToken = default)
+        public async Task<ICommand[]> RunAsync(ICommand command, CancellationToken cancellationToken = default)
         {
             command = command ?? throw new ArgumentNullException(nameof(command));
             
-            var tasks = new List<Task<IValue>>();
+            var tasks = new List<Task<ICommand>>();
             var calls = GetCalls(command).ToArray();
             if (!calls.Any())
             {
@@ -280,8 +285,9 @@ namespace H.Services
             try
             {
                 var values = await RunAsync(command, cancellationToken).ConfigureAwait(false);
+                var value = values.First();
 
-                return values.FirstOrDefault(value => !value.IsEmpty) ?? Value.Empty;
+                return value.Output;
             }
             catch (OperationCanceledException)
             {

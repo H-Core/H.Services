@@ -31,7 +31,7 @@ namespace H.Services.IntegrationTests
                 new Command("long-job", "5000"), cancellationToken);
             
             Assert.AreEqual(1, values.Length);
-            Assert.AreEqual("5000", values[0].Argument);
+            Assert.AreEqual("5000", values[0].Input.Argument);
         }
         
         [TestMethod]

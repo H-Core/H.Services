@@ -37,7 +37,7 @@ namespace H.Services.IntegrationTests
             this RecognitionService service,
             CancellationToken cancellationToken = default)
         {
-            var recording = await service.StartRecordAsync(RecordingFormat.Mp3, cancellationToken);
+            var recording = await service.StartRecordAsync(AudioFormat.Mp3, cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
