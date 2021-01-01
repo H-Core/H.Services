@@ -128,7 +128,6 @@ namespace H.Services.IntegrationTests
             await runnerService.WaitAllAsync(cancellationToken);
         }
 
-#if NET48
         [TestMethod]
         public async Task TorrentTest()
         {
@@ -154,6 +153,5 @@ namespace H.Services.IntegrationTests
             var runnerService = container.Resolve<RunnerService>();
             await runnerService.WaitAllAsync(cancellationToken);
         }
-#endif
     }
 }

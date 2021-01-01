@@ -9,14 +9,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.0-preview-20201123-03" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.0-preview-20201126-03" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.0-preview-20201126-03" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
     <PackageReference Include="H.IO" Version="1.0.1" />
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.19.4" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.19.1" />
     <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.19.5" />
-    <PackageReference Include="H.Runners.SelectRunner" Version="0.19.6" />
-    <PackageReference Include="H.Runners.TelegramRunner" Version="0.19.6" />
-    <PackageReference Include="H.Runners.TorrentRunner" Version="0.19.6" />
+    <PackageReference Include="H.Runners.SelectRunner" Version="0.19.6.2" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.19.6.2" />
+    <PackageReference Include="H.Runners.TorrentRunner" Version="0.19.6.2" />
     <PackageReference Include="H.Searchers.WebSearchers" Version="0.19.6" />
     <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.19.4" />
   </ItemGroup>

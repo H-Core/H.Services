@@ -79,7 +79,7 @@ namespace H.Services.IntegrationTests
 
             await hookService.InitializeAsync(cancellationToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken);
 
             await runnerService.WaitAllAsync(cancellationToken);
         }
