@@ -39,6 +39,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.IpcService", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.HookService", "src\libs\H.Services.HookService\H.Services.HookService.csproj", "{A95308EC-E8E6-4298-B8F3-7CDDFF382B86}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{2089E6D2-32E7-4175-B3E3-11BEC0076719}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.ConsoleApp", "src\apps\H.Services.ConsoleApp\H.Services.ConsoleApp.csproj", "{3E8B1BE8-90C4-40CB-B916-00EEBC729186}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +85,10 @@ Global
 		{A95308EC-E8E6-4298-B8F3-7CDDFF382B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A95308EC-E8E6-4298-B8F3-7CDDFF382B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A95308EC-E8E6-4298-B8F3-7CDDFF382B86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E8B1BE8-90C4-40CB-B916-00EEBC729186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E8B1BE8-90C4-40CB-B916-00EEBC729186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E8B1BE8-90C4-40CB-B916-00EEBC729186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E8B1BE8-90C4-40CB-B916-00EEBC729186}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +103,7 @@ Global
 		{FB52C82D-F844-4C2A-8D3B-63C41B47D515} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{31A2C5C1-BD99-44BE-8A97-F69173412E3B} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{A95308EC-E8E6-4298-B8F3-7CDDFF382B86} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{3E8B1BE8-90C4-40CB-B916-00EEBC729186} = {2089E6D2-32E7-4175-B3E3-11BEC0076719}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1493AEE4-9211-46E9-BFE6-8F629EAC5693}

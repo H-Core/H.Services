@@ -42,6 +42,7 @@ namespace H.Services.IntegrationTests
             AddService<RecognitionService>(builder);
             AddService<RunnerService>(builder)
                 .UsingConstructor(typeof(IModuleService[]), typeof(ICommandProducer[]));
+            AddService<HookService>(builder);
 
             return builder.Build();
         }
