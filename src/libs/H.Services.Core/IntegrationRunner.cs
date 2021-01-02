@@ -33,14 +33,11 @@ namespace H.Services.Core
         /// <returns></returns>
         public async Task SayAsync(string text, CancellationToken cancellationToken = default)
         {
-            var values = await RunAsync(new Command("synthesize", text, "raw"), cancellationToken)
+            var values = await RunAsync(new Command("synthesize", text), cancellationToken)
                 .ConfigureAwait(false);
             var value = values.First();
 
-            await RunAsync(new Command("play", new Value("raw")
-            {
-                Data = value.Data,
-            }), cancellationToken)
+            await RunAsync(new Command("play", value), cancellationToken)
                 .ConfigureAwait(false);
         }
 
