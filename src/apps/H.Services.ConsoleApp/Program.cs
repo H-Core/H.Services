@@ -22,8 +22,10 @@ using var exceptions = container.EnableLoggingForServices();
 var moduleService = container.Resolve<StaticModuleService>();
 var recognitionService = container.Resolve<RecognitionService>();
 var runnerService = container.Resolve<RunnerService>();
+var deskbandService = container.Resolve<IpcClientService>();
 
 moduleService.Add(new RecognitionServiceRunner(recognitionService));
+moduleService.Add(new IpcClientServiceRunner("deskband", deskbandService));
 
 while (true)
 {

@@ -44,6 +44,16 @@ namespace H.Services.IntegrationTests
                 .UsingConstructor(typeof(IModuleService[]), typeof(ICommandProducer[]));
             AddService<HookService>(builder);
 
+            builder
+                .RegisterInstance(new IpcClientService("H.Deskband")
+                {
+                    ConnectedCommandFactory = _ => new Command("print", "Connected to H.DeskBand."),
+                    DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),
+                })
+                .SingleInstance()
+                .AsImplementedInterfaces()
+                .AsSelf();
+
             return builder.Build();
         }
 
