@@ -1,6 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 using Autofac;
+using H.Core;
 using H.Services;
 using H.Services.Core;
 using H.Services.IntegrationTests;
@@ -21,10 +21,13 @@ using var exceptions = container.EnableLoggingForServices();
 
 var moduleService = container.Resolve<StaticModuleService>();
 var recognitionService = container.Resolve<RecognitionService>();
-var hookService = container.Resolve<HookService>();
-
-await hookService.InitializeAsync();
+var runnerService = container.Resolve<RunnerService>();
 
 moduleService.Add(new RecognitionServiceRunner(recognitionService));
 
-await Task.Delay(Timeout.InfiniteTimeSpan).ConfigureAwait(false);
+while (true)
+{
+    var line = Console.ReadLine() ?? string.Empty;
+
+    await runnerService.RunAsync(Command.Parse(line)).ConfigureAwait(false);
+}

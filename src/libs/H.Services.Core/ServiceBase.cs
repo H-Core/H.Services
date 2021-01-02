@@ -109,14 +109,14 @@ namespace H.Services.Core
         /// <param name="action"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected Task InitializeAsync(Action action, CancellationToken cancellationToken = default)
+        protected async Task InitializeAsync(Action action, CancellationToken cancellationToken = default)
         {
-            return InitializeAsync(() =>
+            await InitializeAsync(() =>
             {
                 action();
 
                 return Task.CompletedTask;
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

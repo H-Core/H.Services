@@ -181,13 +181,13 @@ namespace H.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task InitializeAsync(CancellationToken cancellationToken = default)
+        public override async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            return InitializeAsync(() =>
+            await InitializeAsync(() =>
             {
                 KeyboardHook.Start();
                 MouseHook.Start();
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
