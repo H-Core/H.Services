@@ -29,5 +29,12 @@ while (true)
 {
     var line = Console.ReadLine() ?? string.Empty;
 
-    await runnerService.RunAsync(Command.Parse(line)).ConfigureAwait(false);
+    try
+    {
+        await runnerService.RunAsync(Command.Parse(line)).ConfigureAwait(false);
+    }
+    catch (Exception exception)
+    {
+        Console.WriteLine($"Exception: {exception}");
+    }
 }
