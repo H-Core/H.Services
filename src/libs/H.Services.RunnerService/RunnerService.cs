@@ -43,6 +43,11 @@ namespace H.Services
         /// </summary>
         public event EventHandler<ICall>? CallCancelled;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<ICommand>? NotSupported;
+
         private void OnCallRunning(ICall value)
         {
             CallRunning?.Invoke(this, value);
@@ -56,6 +61,11 @@ namespace H.Services
         private void OnCallCancelled(ICall value)
         {
             CallCancelled?.Invoke(this, value);
+        }
+
+        private void OnNotSupported(ICommand value)
+        {
+            NotSupported?.Invoke(this, value);
         }
 
         #endregion
@@ -158,7 +168,8 @@ namespace H.Services
             var calls = GetCalls(command).ToArray();
             if (!calls.Any())
             {
-                throw new ArgumentException($"Command is not supported: {command}");
+                OnNotSupported(command);
+                return new []{ command };
             }
             
             foreach (var call in calls)

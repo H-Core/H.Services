@@ -68,6 +68,10 @@ namespace H.Services.IntegrationTests
                     {
                         Console.WriteLine($"{nameof(runnerService.CallCancelled)}: {call}");
                     };
+                    runnerService.NotSupported += (_, command) =>
+                    {
+                        Console.WriteLine($"{nameof(runnerService.NotSupported)}: {command}");
+                    };
                     break;
             }
         }
