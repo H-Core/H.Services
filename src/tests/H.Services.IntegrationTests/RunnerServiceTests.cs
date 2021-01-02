@@ -122,10 +122,10 @@ namespace H.Services.IntegrationTests
                 moduleService, runnerService
             }.EnableLogging(cancellationTokenSource);
 
-            var recording = await recognitionService.StartRecordAsync(recognitionService.Recognizer.StreamingFormat, cancellationToken);
+            var recognition = await recognitionService.StartAsync(cancellationToken);
             var bytes = await recognitionService.StartRecordMp3_5Second_Stop_Async(cancellationToken);
-            var data = await recording.StopAsync(cancellationToken);
-            var preview = await recognitionService.ConvertAsync(data, cancellationToken);
+            var preview = await recognition.StopAsync(cancellationToken);
+
             await runnerService.RunAsync(
                 new Command("telegram audio", new Value(string.Empty, preview)
                 {

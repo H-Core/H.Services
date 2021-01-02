@@ -65,22 +65,17 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="format"></param>
+        /// <param name="settings"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IRecording> StartRecordAsync(AudioFormat format, CancellationToken cancellationToken = default)
+        public async Task<IRecording> StartRecordAsync(AudioSettings? settings = null, CancellationToken cancellationToken = default)
         {
-            if (format is AudioFormat.None)
-            {
-                throw new ArgumentException($"Invalid format: {format}");
-            }
-            
             if (InitializeState is not State.Completed)
             {
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
             
-            return await Recorder.StartAsync(format, cancellationToken)
+            return await Recorder.StartAsync(settings, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -88,9 +83,10 @@ namespace H.Services
         /// 
         /// </summary>
         /// <param name="bytes"></param>
+        /// <param name="settings"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ConvertAsync(byte[] bytes, CancellationToken cancellationToken = default)
+        public async Task<string> ConvertAsync(byte[] bytes, AudioSettings? settings = null, CancellationToken cancellationToken = default)
         {
             bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 
@@ -99,7 +95,7 @@ namespace H.Services
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            return await Recognizer.ConvertOverStreamingRecognition(bytes, cancellationToken)
+            return await Recognizer.ConvertOverStreamingRecognition(bytes, settings, cancellationToken)
                 .ConfigureAwait(false);
         }
 

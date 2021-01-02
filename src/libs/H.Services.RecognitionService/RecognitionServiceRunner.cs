@@ -24,12 +24,9 @@ namespace H.Services
             
             Add(new ProcessAction("record", async (process, command, cancellationToken) =>
             {
-                var format = Enum.TryParse<AudioFormat>(
-                    command.Input.Arguments.ElementAt(0), true, out var result)
-                    ? result
-                    : AudioFormat.Mp3;
+                var settings = AudioSettings.Parse(command.Input.Argument);
                 
-                using var recording = await service.StartRecordAsync(format, cancellationToken)
+                using var recording = await service.StartRecordAsync(settings, cancellationToken)
                     .ConfigureAwait(false);
 
                 await process.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -37,14 +34,16 @@ namespace H.Services
                 await recording.StopAsync(cancellationToken).ConfigureAwait(false);
                 
                 return new Value(recording.Data);
-            }));
+            }, "Arguments: audioSettings?"));
             Add(AsyncAction.WithCommand("convert-audio-to-text", async (command, cancellationToken) =>
             {
-                var text = await service.ConvertAsync(command.Input.Data, cancellationToken)
+                var settings = AudioSettings.Parse(command.Input.Argument);
+
+                var text = await service.ConvertAsync(command.Input.Data, settings, cancellationToken)
                     .ConfigureAwait(false);
 
                 return new Value(text);
-            }));
+            }, "Arguments: audioSettings?"));
             
             Add(new ProcessAction("send-telegram-voice-message", async (process, command, cancellationToken) =>
             {
@@ -52,7 +51,7 @@ namespace H.Services
 
                 using var recognition = await service.StartConvertAsync(cancellationToken)
                     .ConfigureAwait(false);
-                using var recording = await service.StartRecordAsync(AudioFormat.Mp3, cancellationToken)
+                using var recording = await service.StartRecordAsync(new AudioSettings(AudioFormat.Mp3), cancellationToken)
                     .ConfigureAwait(false);
 
                 await process.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -67,7 +66,7 @@ namespace H.Services
                 await RunAsync(new Command("telegram audio", value), cancellationToken).ConfigureAwait(false);
 
                 return value;
-            }, "to?"));
+            }, "Arguments: to?"));
         }
 
         #endregion
