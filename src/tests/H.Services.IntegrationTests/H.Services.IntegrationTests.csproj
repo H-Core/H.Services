@@ -19,7 +19,7 @@
     <PackageReference Include="H.IO" Version="1.0.1" />
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.19.4" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.20.2" />
-    <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.2" />
+    <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.5" />
     <PackageReference Include="H.Runners.SelectRunner" Version="0.19.6.2" />
     <PackageReference Include="H.Runners.TelegramRunner" Version="0.19.6.2" />
     <PackageReference Include="H.Runners.TorrentRunner" Version="0.19.6.2" />

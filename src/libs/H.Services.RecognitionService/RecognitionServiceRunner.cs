@@ -59,7 +59,9 @@ namespace H.Services
                 var bytes = await recording.StopAsync(cancellationToken).ConfigureAwait(false);
                 var result = await recognition.StopAsync(cancellationToken).ConfigureAwait(false);
 
-                var value = new Value(to ?? string.Empty, result)
+                var value = new Value(
+                    to ?? string.Empty, 
+                    string.IsNullOrWhiteSpace(result) ? "unknown" : result)
                 {
                     Data = bytes,
                 };
