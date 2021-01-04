@@ -47,7 +47,7 @@ namespace H.Services.Core
         /// <exception cref="ArgumentNullException"></exception>
         public ConsumerService(params IModuleService[] moduleServices)
         {
-            ModuleServices = moduleServices ?? throw new ArgumentNullException(nameof(moduleServices));
+            ModuleServices = moduleServices;
 
             foreach (var moduleService in moduleServices)
             {

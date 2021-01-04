@@ -9,6 +9,10 @@
     <Description></Description>
   </PropertyGroup>
 
+  <PropertyGroup Label="Analyzers">
+    <NoWarn>$(NoWarn);3002</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="H.Hooks" Version="1.0.1" />
   </ItemGroup>

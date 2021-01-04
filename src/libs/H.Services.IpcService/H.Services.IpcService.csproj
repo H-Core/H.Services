@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Pipes.AccessControl" Version="1.14.7" />
+    <PackageReference Include="H.Pipes.AccessControl" Version="1.14.8" />
   </ItemGroup>
 
   <ItemGroup>

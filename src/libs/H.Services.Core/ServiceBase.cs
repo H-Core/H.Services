@@ -26,17 +26,17 @@ namespace H.Services.Core
         /// <summary>
         /// 
         /// </summary>
-        protected List<IServiceBase> Dependencies { get; } = new ();
+        protected ICollection<IServiceBase> Dependencies { get; } = new List<IServiceBase>();
 
         /// <summary>
         /// 
         /// </summary>
-        protected List<IAsyncDisposable> AsyncDisposables { get; } = new();
+        protected ICollection<IAsyncDisposable> AsyncDisposables { get; } = new List<IAsyncDisposable>();
 
         /// <summary>
         /// 
         /// </summary>
-        protected List<IDisposable> Disposables { get; } = new();
+        protected ICollection<IDisposable> Disposables { get; } = new List<IDisposable>();
 
         #endregion
 

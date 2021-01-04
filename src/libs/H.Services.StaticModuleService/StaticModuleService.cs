@@ -58,8 +58,6 @@ namespace H.Services
         /// <exception cref="ArgumentNullException"></exception>
         public StaticModuleService(params IModule[] modules)
         {
-            modules = modules ?? throw new ArgumentNullException(nameof(modules));
-
             foreach (var module in modules)
             {
                 Add(module);

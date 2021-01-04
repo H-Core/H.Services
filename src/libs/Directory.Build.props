@@ -2,15 +2,23 @@
 
   <Import Project="..\Directory.Build.props" />
 
+  <PropertyGroup Label="Common">
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
   <PropertyGroup Label="Signing">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)src\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup Label="CLSCompliant">
+    <Compile Include="$(SolutionDir)src\CLSCompliantTrue.cs" />
+  </ItemGroup>
+
   <PropertyGroup Label="Nuget">
-    <Version>0.20.7</Version>
+    <Version>0.20.8</Version>
     <PackageReleaseNotes>
-      To H.Core 0.20.7.
+      To H.Core 0.20.8.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -45,14 +53,8 @@
   <PropertyGroup Label="Analyzers">
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
-    <NoWarn>$(NoWarn);CA1031;0067</NoWarn>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <NoWarn>$(NoWarn);CA1031;0067;CA1003;CA1508;CA1816</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup Label="Analyzers">
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 
 </Project>
