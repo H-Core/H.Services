@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net4.6.1</TargetFrameworks>
+    <RootNamespace>H.Services.Apps</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI.Fody" Version="13.0.27" />
+    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="9.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\H.Services\H.Services.csproj" />
+  </ItemGroup>
+
+</Project>
