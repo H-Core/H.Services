@@ -50,7 +50,12 @@ namespace H.Services.Apps
         private void Application_Startup(object _, StartupEventArgs e)
         {
             var view = (Window)GetView<MainViewModel>(out var _);
-            view.ShowDialog();
+            view.Show();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+
         }
 
         #endregion
