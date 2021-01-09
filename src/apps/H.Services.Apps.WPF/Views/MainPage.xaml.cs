@@ -26,6 +26,34 @@ namespace H.Services.Apps.Views
                         static view => view.OutputTextBox.Text)
                     .DisposeWith(disposable);
 
+                var showHideCommand = ReactiveCommand.Create(() =>
+                {
+                    if (Visibility == Visibility.Visible)
+                    {
+                        Hide();
+                    }
+                    else
+                    {
+                        Show();
+                    }
+                });
+                var closeCommand = ReactiveCommand.Create(Close);
+                Observable
+                    .FromEventPattern(TaskbarIcon, nameof(TaskbarIcon.TrayLeftMouseDown))
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(showHideCommand)
+                    .DisposeWith(disposable);
+                Observable
+                    .FromEventPattern(ShowHideMenuItem, nameof(ShowHideMenuItem.Click))
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(showHideCommand)
+                    .DisposeWith(disposable);
+                Observable
+                    .FromEventPattern(CloseMenuItem, nameof(CloseMenuItem.Click))
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(closeCommand)
+                    .DisposeWith(disposable);
+
                 InputTextBox
                     .Events().KeyUp
                     .Select(static x => x.Key)

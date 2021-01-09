@@ -32,8 +32,8 @@
                         NoLeftClickDelay="True">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Show/Hide"/>
-                    <MenuItem Header="Close"/>
+                    <MenuItem Header="Show/Hide" x:Name="ShowHideMenuItem" />
+                    <MenuItem Header="Close" x:Name="CloseMenuItem"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
