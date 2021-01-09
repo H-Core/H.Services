@@ -17,7 +17,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="ReactiveUI.Events.WPF" Version="13.0.27" />
     <PackageReference Include="ReactiveUI.WPF" Version="13.0.27" />
-    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="9.8.1" />
     <PackageReference Include="Splat.Microsoft.Extensions.Logging" Version="9.8.1" />
   </ItemGroup>
 
