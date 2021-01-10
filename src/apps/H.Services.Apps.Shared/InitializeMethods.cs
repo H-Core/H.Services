@@ -23,34 +23,7 @@ namespace H.Services.Apps
               .CreateDefaultBuilder()
 #endif
               .ConfigureServices(ConfigureServices)
-              .ConfigureLogging(builder =>
-              {
-#if WINDOWS_UWP
-                  // Remove loggers incompatible with UWP.
-                  foreach (var logger in builder
-                      .Services
-                      .Where(service => service.ImplementationType == typeof(Microsoft.Extensions.Logging.EventLog.EventLogLoggerProvider))
-                      .ToList())
-                  {
-                      builder.Services.Remove(logger);
-                  }
-#endif
-
-                  builder
-                      .AddSplat()
-#if !__WASM__
-                      .AddConsole()
-#else
-                      .ClearProviders()            
-#endif
-
-#if DEBUG
-                      .SetMinimumLevel(LogLevel.Debug)
-#else
-                      .SetMinimumLevel(LogLevel.Information)
-#endif
-                      ;
-              })
+              .ConfigureLogging(ConfigureLogging)
               .Build();
         }
 
@@ -79,6 +52,35 @@ namespace H.Services.Apps
             // Register views.
             services
                 .AddTransient<IViewFor<MainViewModel>, MainPage>();
+        }
+
+        private static void ConfigureLogging(ILoggingBuilder builder)
+        {
+#if WINDOWS_UWP
+            // Remove loggers incompatible with UWP.
+            foreach (var logger in builder
+              .Services
+              .Where(service => service.ImplementationType == typeof(Microsoft.Extensions.Logging.EventLog.EventLogLoggerProvider))
+              .ToList())
+            {
+              builder.Services.Remove(logger);
+            }
+#endif
+
+            builder
+                .AddSplat()
+#if !__WASM__
+                .AddConsole()
+#else
+                .ClearProviders()            
+#endif
+
+#if DEBUG
+                .SetMinimumLevel(LogLevel.Debug)
+#else
+                .SetMinimumLevel(LogLevel.Information)
+#endif
+                ;
         }
     }
 }
