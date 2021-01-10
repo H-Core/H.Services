@@ -28,7 +28,11 @@ namespace H.Services.Apps
                 Trace.WriteLine($"Exception: {e.Exception}");
             };
 
-            Host = InitializeMethods.InitializeHost();
+            Host = HostBuilder
+                .Create()
+                .AddViews()
+                .AddPlatformSpecificLoggers()
+                .Build();
         }
 
         #endregion

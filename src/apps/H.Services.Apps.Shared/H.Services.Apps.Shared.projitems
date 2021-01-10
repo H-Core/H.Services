@@ -9,6 +9,6 @@
     <Import_RootNamespace>H.Services.Apps</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)InitializeMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HostBuilderExtensions.cs" />
   </ItemGroup>
 </Project>
