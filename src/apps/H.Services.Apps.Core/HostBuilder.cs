@@ -5,6 +5,7 @@ using ReactiveUI;
 using Splat;
 using Splat.Microsoft.Extensions.DependencyInjection;
 using H.Services.Apps.ViewModels;
+using Splat.Microsoft.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace H.Services.Apps
@@ -22,7 +23,7 @@ namespace H.Services.Apps
         private static void ConfigureServices(IServiceCollection services)
         {
             services.UseMicrosoftDependencyResolver();
-
+            
             var resolver = Locator.CurrentMutable;
             resolver.InitializeSplat();
             resolver.InitializeReactiveUI();
@@ -35,16 +36,15 @@ namespace H.Services.Apps
             // Register main view model.
             services
                 .AddSingleton<MainViewModel>()
-                .AddSingleton<IScreen>(provider => provider.GetRequiredService<MainViewModel>());
+                .AddSingleton<IScreen, MainViewModel>(provider => provider.GetRequiredService<MainViewModel>());
 
             // Register other view models.
-            services
-                .AddSingleton<MainViewModel>();
         }
 
         private static void ConfigureLogging(ILoggingBuilder builder)
         {
             builder
+                .AddSplat()
 #if DEBUG
                 .SetMinimumLevel(LogLevel.Debug)
 #else
