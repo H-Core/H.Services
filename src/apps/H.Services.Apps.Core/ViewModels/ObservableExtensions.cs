@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reactive.Linq;
-using Dedoose;
 using Splat;
 
 #nullable enable

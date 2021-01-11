@@ -5,7 +5,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Dedoose;
 using ReactiveUI;
 
 namespace H.Services.Apps.Views

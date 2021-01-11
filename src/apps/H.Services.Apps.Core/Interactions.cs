@@ -2,7 +2,7 @@
 using System.Reactive;
 using ReactiveUI;
 
-namespace Dedoose
+namespace H.Services.Apps
 {
     public static class Interactions
     {
