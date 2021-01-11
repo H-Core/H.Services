@@ -10,6 +10,16 @@ namespace H.Services.Apps.Initialization
 {
     public static class ConfigureServicesExtensions
     {
+        public static IServiceCollection AddModules(this IServiceCollection services)
+        {
+            services = services ?? throw new ArgumentNullException(nameof(services));
+
+            services
+                .AddSingleton<IntegrationRunner>();
+
+            return services;
+        }
+
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));

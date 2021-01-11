@@ -61,7 +61,9 @@ namespace H.Services.Apps
                 var view = (Window)GetView<MainViewModel>(out var viewModel);
                 view.Show();
 
-                await Host.InitializeServices(viewModel.WriteLine).ConfigureAwait(false);
+                await Host.InitializeServicesAsync(viewModel.WriteLine).ConfigureAwait(false);
+
+                Host.InitializeServiceRunners();
             }
             catch (Exception exception)
             {

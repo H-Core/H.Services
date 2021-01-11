@@ -11,7 +11,7 @@ namespace H.Services.Apps.Initialization
 {
     public static class InitializeHostExtensions
     {
-        public static async Task InitializeServices(
+        public static async Task InitializeServicesAsync(
             this IHost host, 
             Action<string>? traceAction = null, 
             CancellationToken cancellationToken = default)
@@ -43,11 +43,11 @@ namespace H.Services.Apps.Initialization
                     case HookService hookService:
                         hookService.UpCombinationCaught += (_, value) =>
                         {
-                            traceAction?.Invoke($"{nameof(hookService.UpCombinationCaught)}: {value}");
+                            //traceAction?.Invoke($"{nameof(hookService.UpCombinationCaught)}: {value}");
                         };
                         hookService.DownCombinationCaught += (_, value) =>
                         {
-                            traceAction?.Invoke($"{nameof(hookService.DownCombinationCaught)}: {value}");
+                            //traceAction?.Invoke($"{nameof(hookService.DownCombinationCaught)}: {value}");
                         };
                         break;
 
@@ -80,6 +80,16 @@ namespace H.Services.Apps.Initialization
 
                 await service.InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        public static void InitializeServiceRunners(this IHost host)
+        {
+            host = host ?? throw new ArgumentNullException(nameof(host));
+
+            var staticModuleService = host.Services.GetRequiredService<StaticModuleService>();
+            
+            staticModuleService.Add(new DeskbandServiceRunner(host.Services.GetRequiredService<DeskbandService>()));
+            staticModuleService.Add(new RecognitionServiceRunner(host.Services.GetRequiredService<RecognitionService>()));
         }
     }
 }

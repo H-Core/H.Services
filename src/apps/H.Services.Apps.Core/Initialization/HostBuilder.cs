@@ -28,6 +28,7 @@ namespace H.Services.Apps.Initialization
             resolver.InitializeReactiveUI();
 
             services
+                .AddModules()
                 .AddServices()
                 .AddViewModels();
         }

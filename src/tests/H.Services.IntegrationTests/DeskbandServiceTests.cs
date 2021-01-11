@@ -16,7 +16,7 @@ namespace H.Services.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(15));
             var cancellationToken = cancellationTokenSource.Token;
 
-            await using var deskbandService = new IpcClientService("H.Deskband")
+            await using var deskbandService = new DeskbandService
             {
                 ConnectedCommandFactory = _ => new Command("print", "Connected to H.DeskBand."),
                 DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),
@@ -35,7 +35,7 @@ namespace H.Services.IntegrationTests
                 moduleService, runnerService, deskbandService
             }.EnableLogging(cancellationTokenSource);
 
-            moduleService.Add(new IpcClientServiceRunner("deskband", deskbandService));
+            moduleService.Add(new DeskbandServiceRunner(deskbandService));
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
 
