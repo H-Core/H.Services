@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\H.Services.Apps.Core\H.Services.Apps.Core.csproj" />
+    <ProjectReference Include="..\..\libs\H.Services.Apps.Core\H.Services.Apps.Core.csproj" />
   </ItemGroup>
 
-  <Import Project="..\H.Services.Apps.Shared\H.Services.Apps.Shared.projitems" Label="Shared" />
+  <Import Project="..\..\shared\H.Services.Apps.Shared\H.Services.Apps.Shared.projitems" Label="Shared" />
 
 </Project>

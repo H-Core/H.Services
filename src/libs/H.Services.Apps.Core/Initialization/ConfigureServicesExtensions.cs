@@ -79,36 +79,36 @@ namespace H.Services.Apps.Initialization
                 .AddSingleton(static provider =>
                     new StaticModuleService(
                         provider.GetServices<IModule>().ToArray()))
-                .AddServiceInterface<IServiceBase, StaticModuleService>()
-                .AddServiceInterface<IModuleService, StaticModuleService>()
-                .AddServiceInterface<ICommandProducer, StaticModuleService>()
+                .AddInterface<IServiceBase, StaticModuleService>()
+                .AddInterface<IModuleService, StaticModuleService>()
+                .AddInterface<ICommandProducer, StaticModuleService>()
 
                 .AddSingleton(static provider =>
                     new RecognitionService(
                         provider.GetServices<IModuleService>().ToArray()))
-                .AddServiceInterface<IServiceBase, RecognitionService>()
-                .AddServiceInterface<ICommandProducer, RecognitionService>()
+                .AddInterface<IServiceBase, RecognitionService>()
+                .AddInterface<ICommandProducer, RecognitionService>()
 
                 .AddSingleton(static provider => 
                     new RunnerService(
                         provider.GetServices<IModuleService>().ToArray(), 
                         provider.GetServices<ICommandProducer>().ToArray()))
-                .AddServiceInterface<IServiceBase, RunnerService>()
+                .AddInterface<IServiceBase, RunnerService>()
 
                 .AddSingleton(static provider =>
                     new HookService(
                         provider.GetServices<BoundCommand>().ToArray()))
-                .AddServiceInterface<IServiceBase, HookService>()
-                .AddServiceInterface<ICommandProducer, HookService>()
-                .AddServiceInterface<IProcessCommandProducer, HookService>()
+                .AddInterface<IServiceBase, HookService>()
+                .AddInterface<ICommandProducer, HookService>()
+                .AddInterface<IProcessCommandProducer, HookService>()
 
                 .AddSingleton(static _ => new DeskbandService
                 {
                     ConnectedCommandFactory = _ => new Command("print", "Connected to H.DeskBand."),
                     DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),
                 })
-                .AddServiceInterface<IServiceBase, DeskbandService>()
-                .AddServiceInterface<ICommandProducer, DeskbandService>()
+                .AddInterface<IServiceBase, DeskbandService>()
+                .AddInterface<ICommandProducer, DeskbandService>()
                 ;
 
             return services;
@@ -120,12 +120,12 @@ namespace H.Services.Apps.Initialization
 
             services
                 .AddSingleton<MainViewModel>()
-                .AddServiceInterface<IScreen, MainViewModel>();
+                .AddInterface<IScreen, MainViewModel>();
 
             return services;
         }
 
-        public static IServiceCollection AddServiceInterface<TInterface, TService>(this IServiceCollection services)
+        public static IServiceCollection AddInterface<TInterface, TService>(this IServiceCollection services)
             where TService : class, TInterface
             where TInterface : class
         {

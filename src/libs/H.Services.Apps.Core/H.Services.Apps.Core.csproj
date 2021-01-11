@@ -5,6 +5,10 @@
     <RootNamespace>H.Services.Apps</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Label="Signing">
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
   <ItemGroup Label="MVVM">
     <PackageReference Include="ReactiveUI.Fody" Version="13.0.38" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />

@@ -41,18 +41,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.HookService", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{2089E6D2-32E7-4175-B3E3-11BEC0076719}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.ConsoleApp", "src\apps\H.Services.ConsoleApp\H.Services.ConsoleApp.csproj", "{3E8B1BE8-90C4-40CB-B916-00EEBC729186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.Apps.Console", "src\apps\H.Services.ConsoleApp\H.Services.Apps.Console.csproj", "{3E8B1BE8-90C4-40CB-B916-00EEBC729186}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.Apps.Core", "src\apps\H.Services.Apps.Core\H.Services.Apps.Core.csproj", "{83BD877C-C6EF-44B3-B32B-CE46801E7D8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.Apps.Core", "src\libs\H.Services.Apps.Core\H.Services.Apps.Core.csproj", "{83BD877C-C6EF-44B3-B32B-CE46801E7D8B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Services.Apps.WPF", "src\apps\H.Services.Apps.WPF\H.Services.Apps.WPF.csproj", "{CB3479AD-C35A-4FBE-99C9-88430784430F}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "H.Services.Apps.Shared", "src\apps\H.Services.Apps.Shared\H.Services.Apps.Shared.shproj", "{D28BEA9B-0081-4183-9451-45E64768CA79}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "H.Services.Apps.Shared", "src\shared\H.Services.Apps.Shared\H.Services.Apps.Shared.shproj", "{D28BEA9B-0081-4183-9451-45E64768CA79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{1F74FC4D-D3EA-4FEA-9607-6BADC6F8C8E9}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\apps\H.Services.Apps.Shared\H.Services.Apps.Shared.projitems*{cb3479ad-c35a-4fbe-99c9-88430784430f}*SharedItemsImports = 5
-		src\apps\H.Services.Apps.Shared\H.Services.Apps.Shared.projitems*{d28bea9b-0081-4183-9451-45e64768ca79}*SharedItemsImports = 13
+		src\shared\H.Services.Apps.Shared\H.Services.Apps.Shared.projitems*{cb3479ad-c35a-4fbe-99c9-88430784430f}*SharedItemsImports = 5
+		src\shared\H.Services.Apps.Shared\H.Services.Apps.Shared.projitems*{d28bea9b-0081-4183-9451-45e64768ca79}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,9 +124,9 @@ Global
 		{31A2C5C1-BD99-44BE-8A97-F69173412E3B} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{A95308EC-E8E6-4298-B8F3-7CDDFF382B86} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{3E8B1BE8-90C4-40CB-B916-00EEBC729186} = {2089E6D2-32E7-4175-B3E3-11BEC0076719}
-		{83BD877C-C6EF-44B3-B32B-CE46801E7D8B} = {2089E6D2-32E7-4175-B3E3-11BEC0076719}
+		{83BD877C-C6EF-44B3-B32B-CE46801E7D8B} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{CB3479AD-C35A-4FBE-99C9-88430784430F} = {2089E6D2-32E7-4175-B3E3-11BEC0076719}
-		{D28BEA9B-0081-4183-9451-45E64768CA79} = {2089E6D2-32E7-4175-B3E3-11BEC0076719}
+		{D28BEA9B-0081-4183-9451-45E64768CA79} = {1F74FC4D-D3EA-4FEA-9607-6BADC6F8C8E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1493AEE4-9211-46E9-BFE6-8F629EAC5693}
