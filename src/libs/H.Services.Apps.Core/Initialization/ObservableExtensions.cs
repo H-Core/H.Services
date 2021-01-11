@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reactive.Linq;
+using H.Services.Apps.ViewModels;
 using Splat;
 
 #nullable enable
 
-namespace H.Services.Apps.ViewModels
+namespace H.Services.Apps.Initialization
 {
     /// <summary>
     /// 

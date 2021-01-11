@@ -2,6 +2,7 @@
 using System.Reactive;
 using System.Reactive.Concurrency;
 using H.Core;
+using H.Services.Apps.Initialization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
