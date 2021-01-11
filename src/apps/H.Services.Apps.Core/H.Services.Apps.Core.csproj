@@ -5,11 +5,21 @@
     <RootNamespace>H.Services.Apps</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="MVVM">
     <PackageReference Include="ReactiveUI.Fody" Version="13.0.27" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Splat.Microsoft.Extensions.Logging" Version="9.8.1" />
     <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="9.8.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Modules">
+    <PackageReference Include="H.Notifiers.RssNotifier" Version="0.20.8" />
+    <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.20.8" />
+    <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.8" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.20.8.1" />
+    <PackageReference Include="H.Runners.TorrentRunner" Version="0.20.8.1" />
+    <PackageReference Include="H.Searchers.WebSearchers" Version="0.20.8" />
+    <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.20.8" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Linq;
 using H.Core;
+using H.Core.Runners;
+using H.Recognizers;
+using H.Recorders;
+using H.Runners;
+using H.Searchers;
 using H.Services.Apps.ViewModels;
 using H.Services.Core;
+using H.Synthesizers;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 
@@ -10,12 +16,54 @@ namespace H.Services.Apps.Initialization
 {
     public static class ConfigureServicesExtensions
     {
+        private static IModule CreateAliasRunner(string name, params string[] aliases)
+        {
+            var runner = new Runner();
+            foreach (var alias in aliases)
+            {
+                runner.Add(SyncAction.WithCommand(
+                    alias,
+                    command => runner.Run(new Command(name, command.Input.Arguments)),
+                    "arguments"));
+            }
+
+            return runner;
+        }
+
         public static IServiceCollection AddModules(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));
 
             services
-                .AddSingleton<IntegrationRunner>();
+                .AddSingleton<NAudioRecorder>()
+                .AddSingleton<NAudioPlayer>()
+                .AddSingleton(new WitAiRecognizer
+                {
+                    Token = "XZS4M3BUYV5LBMEWJKAGJ6HCPWZ5IDGY"
+                })
+                .AddSingleton<YandexSynthesizer>()
+                .AddSingleton<GoogleSearcher>()
+                //.AddSingleton<IModule>(provider =>
+                //{
+                //    var mainViewModel = provider.GetRequiredService<MainViewModel>();
+
+                //    return new Runner
+                //    {
+                //        SyncAction.WithSingleArgument("print", mainViewModel.WriteLine, "value"),
+                //    };
+                //})
+                .AddSingleton(CreateAliasRunner("torrent", "смотреть"))
+                .AddSingleton(CreateAliasRunner("telegram", "телеграмм", "отправь", "отправить"))
+                .AddSingleton(CreateAliasRunner("say", "повтори", "повторить", "скажи"))
+                .AddSingleton(new TelegramRunner
+                {
+                    Token = Environment.GetEnvironmentVariable("TELEGRAM_HOMECENTER_BOT_TOKEN")
+                            ?? throw new InvalidOperationException("TELEGRAM_HOMECENTER_BOT_TOKEN environment variable is not found."),
+                    DefaultUserId = 482553595,
+                })
+                .AddSingleton<TorrentRunner>()
+                .AddSingleton<IntegrationRunner>()
+                ;
 
             return services;
         }
