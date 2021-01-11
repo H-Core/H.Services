@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using H.Core;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -37,13 +38,14 @@ namespace H.Services.Apps.ViewModels
             var inputIsNotEmpty = this.WhenAnyValue(
                 static viewModel => viewModel.Input,
                 static input => !string.IsNullOrWhiteSpace(input));
-            Enter = CreateCommand(this, async cancellationToken =>
+            Enter = ReactiveCommand.CreateFromTask(async cancellationToken =>
             {
                 var input = Input;
                 Input = string.Empty;
 
                 await RunnerService.RunAsync(Command.Parse(input), cancellationToken).ConfigureAwait(false);
             }, inputIsNotEmpty);
+            Enter.ThrownExceptions.DefaultCatch(this);
         }
 
         #endregion
@@ -54,7 +56,7 @@ namespace H.Services.Apps.ViewModels
         {
             text = text ?? throw new ArgumentNullException(nameof(text));
 
-            Output += text;
+            RxApp.MainThreadScheduler.Schedule(() => Output += text); 
         }
 
         public void WriteLine(string text)
