@@ -44,7 +44,7 @@ namespace H.Services.Apps.Initialization
                 .AddSingleton<IModule, YandexSynthesizer>()
                 .AddSingleton<IModule, GoogleSearcher>()
                 .AddSingleton(CreateAliasRunner("torrent", "смотреть"))
-                .AddSingleton(CreateAliasRunner("telegram", "телеграмм", "отправь", "отправить"))
+                .AddSingleton(CreateAliasRunner("telegram message", "телеграмм", "отправь", "отправить"))
                 .AddSingleton(CreateAliasRunner("say", "повтори", "повторить", "скажи"))
                 .AddSingleton<IModule>(new TelegramRunner
                 {
