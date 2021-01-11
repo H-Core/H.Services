@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using H.Core;
+using H.Core.Recognizers;
 using H.Core.Runners;
 
 namespace H.Services
@@ -61,6 +62,30 @@ namespace H.Services
 
                 var value = new Value(
                     to ?? string.Empty, 
+                    string.IsNullOrWhiteSpace(result) ? "unknown" : result)
+                {
+                    Data = bytes,
+                };
+                await RunAsync(new Command("telegram audio", value), cancellationToken).ConfigureAwait(false);
+
+                return value;
+            }, "Arguments: to?"));
+            Add(new AsyncAction("start-telegram-voice-message", async (command, cancellationToken) =>
+            {
+                var to = command.Input.Arguments.ElementAtOrDefault(0);
+
+                using var recognition = await service.StartConvertAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                using var recording = await service.StartRecordAsync(new AudioSettings(AudioFormat.Mp3), cancellationToken)
+                    .ConfigureAwait(false);
+
+                await recognition.WaitStopAsync(cancellationToken).ConfigureAwait(false);
+
+                var bytes = await recording.StopAsync(cancellationToken).ConfigureAwait(false);
+                var result = await recognition.StopAsync(cancellationToken).ConfigureAwait(false);
+
+                var value = new Value(
+                    to ?? string.Empty,
                     string.IsNullOrWhiteSpace(result) ? "unknown" : result)
                 {
                     Data = bytes,

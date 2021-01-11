@@ -29,7 +29,7 @@ namespace H.Services.Apps.Views
                         static viewModel => viewModel.Input,
                         static view => view.InputTextBox.Text)
                     .DisposeWith(disposable);
-                this.Bind(ViewModel,
+                this.OneWayBind(ViewModel,
                         static viewModel => viewModel.Output,
                         static view => view.OutputTextBox.Text)
                     .DisposeWith(disposable);
