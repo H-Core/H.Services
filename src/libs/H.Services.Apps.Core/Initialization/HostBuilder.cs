@@ -9,8 +9,15 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace H.Services.Apps.Initialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class HostBuilder
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static IHostBuilder Create()
         {
             return Host

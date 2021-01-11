@@ -9,6 +9,18 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
+  <ItemGroup Label="CLSCompliant">
+    <Compile Remove="$(SolutionDir)src\CLSCompliantTrue.cs" />
+  </ItemGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Description>Contains ViewModels and MVVM code for Apps.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Analyzers">
+    <NoWarn>$(NoWarn);CA1014</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup Label="MVVM">
     <PackageReference Include="ReactiveUI.Fody" Version="13.0.38" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />

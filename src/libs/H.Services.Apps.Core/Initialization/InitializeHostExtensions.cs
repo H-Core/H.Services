@@ -9,10 +9,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Splat;
 
+#pragma warning disable IDE0079
+#pragma warning disable CA2000
+
 namespace H.Services.Apps.Initialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class InitializeHostExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="traceAction"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task InitializeServicesAsync(
             this IHost host, 
             Action<string>? traceAction = null, 
@@ -43,11 +56,11 @@ namespace H.Services.Apps.Initialization
                 switch (service)
                 {
                     case HookService hookService:
-                        hookService.UpCombinationCaught += (_, value) =>
+                        hookService.UpCombinationCaught += (_, _) =>
                         {
                             //traceAction?.Invoke($"{nameof(hookService.UpCombinationCaught)}: {value}");
                         };
-                        hookService.DownCombinationCaught += (_, value) =>
+                        hookService.DownCombinationCaught += (_, _) =>
                         {
                             //traceAction?.Invoke($"{nameof(hookService.DownCombinationCaught)}: {value}");
                         };
@@ -84,6 +97,11 @@ namespace H.Services.Apps.Initialization
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <returns></returns>
         public static IHost InitializeServiceRunners(this IHost host)
         {
             host = host ?? throw new ArgumentNullException(nameof(host));
@@ -96,6 +114,11 @@ namespace H.Services.Apps.Initialization
             return host;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <returns></returns>
         public static IHost InitializeViewModelsRunners(this IHost host)
         {
             host = host ?? throw new ArgumentNullException(nameof(host));

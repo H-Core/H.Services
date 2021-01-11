@@ -4,6 +4,9 @@
 
 namespace H.Services.Apps.ViewModels
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ViewModelBase : ReactiveObject
     {
     }

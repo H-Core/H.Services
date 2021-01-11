@@ -12,8 +12,14 @@ using H.Synthesizers;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 
+#pragma warning disable IDE0079
+#pragma warning disable CA2000
+
 namespace H.Services.Apps.Initialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ConfigureServicesExtensions
     {
         private static IModule CreateAliasRunner(string name, params string[] aliases)
@@ -30,6 +36,11 @@ namespace H.Services.Apps.Initialization
             return runner;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddModules(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));
@@ -59,6 +70,11 @@ namespace H.Services.Apps.Initialization
             return services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddBoundCommands(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));
@@ -71,6 +87,11 @@ namespace H.Services.Apps.Initialization
             return services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));
@@ -114,6 +135,11 @@ namespace H.Services.Apps.Initialization
             return services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddViewModels(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));
@@ -125,6 +151,13 @@ namespace H.Services.Apps.Initialization
             return services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TInterface"></typeparam>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddInterface<TInterface, TService>(this IServiceCollection services)
             where TService : class, TInterface
             where TInterface : class

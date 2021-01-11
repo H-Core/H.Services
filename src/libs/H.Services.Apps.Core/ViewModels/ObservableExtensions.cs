@@ -6,8 +6,16 @@ using Splat;
 
 namespace H.Services.Apps.ViewModels
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ObservableExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="observable"></param>
+        /// <param name="viewModelBase"></param>
         public static void DefaultCatch(this IObservable<Exception> observable, ViewModelBase viewModelBase)
         {
             observable = observable ?? throw new ArgumentNullException(nameof(observable));
