@@ -45,7 +45,7 @@ namespace H.Services.IntegrationTests
             AddService<HookService>(builder);
 
             builder
-                .RegisterInstance(new IpcClientService("H.Deskband")
+                .RegisterInstance(new DeskbandService
                 {
                     ConnectedCommandFactory = _ => new Command("print", "Connected to H.DeskBand."),
                     DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),

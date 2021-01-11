@@ -47,5 +47,23 @@ namespace H.Services.Apps.ViewModels
         }
 
         #endregion
+
+        #region Methods
+
+        public void Write(string text)
+        {
+            text = text ?? throw new ArgumentNullException(nameof(text));
+
+            Output += text;
+        }
+
+        public void WriteLine(string text)
+        {
+            text = text ?? throw new ArgumentNullException(nameof(text));
+
+            Write($"{text}{Environment.NewLine}");
+        }
+
+        #endregion
     }
 }

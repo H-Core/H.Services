@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using H.Services.Apps.Initialization;
 using H.Services.Apps.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ReactiveUI;
+using Splat;
+using HostBuilder = H.Services.Apps.Initialization.HostBuilder;
 
 #nullable enable
 
@@ -51,10 +54,19 @@ namespace H.Services.Apps
             return view;
         }
         
-        private void Application_Startup(object _, StartupEventArgs e)
+        private async void Application_Startup(object _, StartupEventArgs e)
         {
-            var view = (Window)GetView<MainViewModel>(out var _);
-            view.Show();
+            try
+            {
+                var view = (Window)GetView<MainViewModel>(out var viewModel);
+                view.Show();
+
+                await Host.InitializeServices(viewModel.WriteLine).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                LogHost.Default.Fatal(exception);
+            }
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

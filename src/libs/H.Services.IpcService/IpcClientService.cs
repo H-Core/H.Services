@@ -11,7 +11,7 @@ namespace H.Services
     /// <summary>
     /// 
     /// </summary>
-    public sealed class IpcClientService : ServiceBase, ICommandProducer
+    public class IpcClientService : ServiceBase, ICommandProducer
     {
         #region Properties
 
