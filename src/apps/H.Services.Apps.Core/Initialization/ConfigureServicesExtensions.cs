@@ -35,34 +35,25 @@ namespace H.Services.Apps.Initialization
             services = services ?? throw new ArgumentNullException(nameof(services));
 
             services
-                .AddSingleton<NAudioRecorder>()
-                .AddSingleton<NAudioPlayer>()
-                .AddSingleton(new WitAiRecognizer
+                .AddSingleton<IModule, NAudioRecorder>()
+                .AddSingleton<IModule, NAudioPlayer>()
+                .AddSingleton<IModule>(new WitAiRecognizer
                 {
                     Token = "XZS4M3BUYV5LBMEWJKAGJ6HCPWZ5IDGY"
                 })
-                .AddSingleton<YandexSynthesizer>()
-                .AddSingleton<GoogleSearcher>()
-                //.AddSingleton<IModule>(provider =>
-                //{
-                //    var mainViewModel = provider.GetRequiredService<MainViewModel>();
-
-                //    return new Runner
-                //    {
-                //        SyncAction.WithSingleArgument("print", mainViewModel.WriteLine, "value"),
-                //    };
-                //})
+                .AddSingleton<IModule, YandexSynthesizer>()
+                .AddSingleton<IModule, GoogleSearcher>()
                 .AddSingleton(CreateAliasRunner("torrent", "смотреть"))
                 .AddSingleton(CreateAliasRunner("telegram", "телеграмм", "отправь", "отправить"))
                 .AddSingleton(CreateAliasRunner("say", "повтори", "повторить", "скажи"))
-                .AddSingleton(new TelegramRunner
+                .AddSingleton<IModule>(new TelegramRunner
                 {
                     Token = Environment.GetEnvironmentVariable("TELEGRAM_HOMECENTER_BOT_TOKEN")
                             ?? throw new InvalidOperationException("TELEGRAM_HOMECENTER_BOT_TOKEN environment variable is not found."),
                     DefaultUserId = 482553595,
                 })
-                .AddSingleton<TorrentRunner>()
-                .AddSingleton<IntegrationRunner>()
+                .AddSingleton<IModule, TorrentRunner>()
+                .AddSingleton<IModule, IntegrationRunner>()
                 ;
 
             return services;

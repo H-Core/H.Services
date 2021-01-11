@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
+using H.Core.Runners;
+using H.Services.Apps.ViewModels;
 using H.Services.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -82,7 +84,7 @@ namespace H.Services.Apps.Initialization
             }
         }
 
-        public static void InitializeServiceRunners(this IHost host)
+        public static IHost InitializeServiceRunners(this IHost host)
         {
             host = host ?? throw new ArgumentNullException(nameof(host));
 
@@ -90,6 +92,23 @@ namespace H.Services.Apps.Initialization
             
             staticModuleService.Add(new DeskbandServiceRunner(host.Services.GetRequiredService<DeskbandService>()));
             staticModuleService.Add(new RecognitionServiceRunner(host.Services.GetRequiredService<RecognitionService>()));
+
+            return host;
+        }
+
+        public static IHost InitializeViewModelsRunners(this IHost host)
+        {
+            host = host ?? throw new ArgumentNullException(nameof(host));
+
+            var staticModuleService = host.Services.GetRequiredService<StaticModuleService>();
+            var mainViewModel = host.Services.GetRequiredService<MainViewModel>();
+
+            staticModuleService.Add(new Runner
+            {
+                SyncAction.WithSingleArgument("print", mainViewModel.WriteLine, "value"),
+            });
+
+            return host;
         }
     }
 }
