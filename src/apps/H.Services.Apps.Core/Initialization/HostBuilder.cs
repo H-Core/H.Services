@@ -29,6 +29,7 @@ namespace H.Services.Apps.Initialization
 
             services
                 .AddModules()
+                .AddBoundCommands()
                 .AddServices()
                 .AddViewModels();
         }

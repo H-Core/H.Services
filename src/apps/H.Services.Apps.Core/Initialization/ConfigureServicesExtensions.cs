@@ -59,6 +59,18 @@ namespace H.Services.Apps.Initialization
             return services;
         }
 
+        public static IServiceCollection AddBoundCommands(this IServiceCollection services)
+        {
+            services = services ?? throw new ArgumentNullException(nameof(services));
+
+            services
+                .AddSingleton(new BoundCommand(
+                    new Command("send-telegram-voice-message"), 
+                    ConsoleKey.L, control: true, isProcessing: true));
+
+            return services;
+        }
+
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services = services ?? throw new ArgumentNullException(nameof(services));
@@ -83,7 +95,9 @@ namespace H.Services.Apps.Initialization
                         provider.GetServices<ICommandProducer>().ToArray()))
                 .AddServiceInterface<IServiceBase, RunnerService>()
 
-                .AddSingleton<HookService>()
+                .AddSingleton(static provider =>
+                    new HookService(
+                        provider.GetServices<BoundCommand>().ToArray()))
                 .AddServiceInterface<IServiceBase, HookService>()
                 .AddServiceInterface<ICommandProducer, HookService>()
                 .AddServiceInterface<IProcessCommandProducer, HookService>()

@@ -75,8 +75,14 @@ namespace H.Services
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
             
-            return await Recorder.StartAsync(settings, cancellationToken)
+            var recording = await Recorder.StartAsync(settings, cancellationToken)
                 .ConfigureAwait(false);
+            recording.Stopped += (_, _) =>
+            {
+                recording.Dispose();
+            };
+
+            return recording;
         }
 
         /// <summary>

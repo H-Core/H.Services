@@ -82,8 +82,13 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public HookService()
+        public HookService(params BoundCommand[] boundCommands)
         {
+            foreach (var boundCommand in boundCommands)
+            {
+                Add(boundCommand);
+            }
+
             Disposables.Add(MouseHook);
             Disposables.Add(KeyboardHook);
 
