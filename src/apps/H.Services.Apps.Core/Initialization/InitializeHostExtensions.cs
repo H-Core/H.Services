@@ -9,7 +9,7 @@ using Splat;
 
 namespace H.Services.Apps.Initialization
 {
-    public static class HostExtensions
+    public static class InitializeHostExtensions
     {
         public static async Task InitializeServices(
             this IHost host, 
