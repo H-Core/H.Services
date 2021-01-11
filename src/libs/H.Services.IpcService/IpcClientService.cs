@@ -146,6 +146,16 @@ namespace H.Services
         #region Public methods
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public override Task InitializeAsync(CancellationToken cancellationToken = default)
+        {
+            return InitializeAsync(() => PipeClient.ConnectAsync(cancellationToken), cancellationToken);
+        }
+
+        /// <summary>
         /// Writes command to server with timeout from property <see cref="Timeout"/>.
         /// </summary>
         /// <param name="value"></param>

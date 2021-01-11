@@ -149,10 +149,7 @@ namespace H.Services
         /// <returns></returns>
         public override Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            return InitializeAsync(async () =>
-            {
-                await PipeServer.StartAsync(cancellationToken).ConfigureAwait(false);
-            }, cancellationToken);
+            return InitializeAsync(() => PipeServer.StartAsync(cancellationToken), cancellationToken);
         }
 
         /// <summary>

@@ -55,7 +55,8 @@ namespace H.Services.Apps.Initialization
                     DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),
                 })
                 .AddServiceInterface<IServiceBase, DeskbandService>()
-                .AddServiceInterface<ICommandProducer, HookService>();
+                .AddServiceInterface<ICommandProducer, DeskbandService>()
+                ;
 
             return services;
         }
