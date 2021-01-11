@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -11,6 +12,14 @@ namespace H.Services.Apps.Views
 {
     public partial class MainPage
     {
+        #region Properties
+
+        private bool IsPreparedToClose { get; set; }
+
+        #endregion
+
+        #region Constructors
+
         public MainPage()
         {
             InitializeComponent();
@@ -37,7 +46,11 @@ namespace H.Services.Apps.Views
                         Show();
                     }
                 });
-                var closeCommand = ReactiveCommand.Create(Close);
+                var closeCommand = ReactiveCommand.Create(() =>
+                {
+                    IsPreparedToClose = true;
+                    Close();
+                });
                 Observable
                     .FromEventPattern(TaskbarIcon, nameof(TaskbarIcon.TrayLeftMouseDown))
                     .Select(_ => Unit.Default)
@@ -52,6 +65,17 @@ namespace H.Services.Apps.Views
                     .FromEventPattern(CloseMenuItem, nameof(CloseMenuItem.Click))
                     .Select(_ => Unit.Default)
                     .InvokeCommand(closeCommand)
+                    .DisposeWith(disposable);
+                Observable
+                    .FromEventPattern<CancelEventArgs>(this, nameof(Closing))
+                    .Select(args =>
+                    {
+                        args.EventArgs.Cancel = !IsPreparedToClose;
+
+                        return Unit.Default;
+                    })
+                    .Where(_ => !IsPreparedToClose)
+                    .InvokeCommand(showHideCommand)
                     .DisposeWith(disposable);
 
                 InputTextBox
@@ -70,5 +94,7 @@ namespace H.Services.Apps.Views
                 }).DisposeWith(disposable);
             });
         }
+
+        #endregion
     }
 }
