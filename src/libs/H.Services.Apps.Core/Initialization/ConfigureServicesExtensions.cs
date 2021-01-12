@@ -22,18 +22,46 @@ namespace H.Services.Apps.Initialization
     /// </summary>
     public static class ConfigureServicesExtensions
     {
-        private static IModule CreateAliasRunner(string name, params string[] aliases)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="aliases"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static IModule CreateAliasRunner(ICommand command, params string[] aliases)
         {
+            command = command ?? throw new ArgumentNullException(nameof(command));
+
             var runner = new Runner();
             foreach (var alias in aliases)
             {
                 runner.Add(SyncAction.WithCommand(
                     alias,
-                    command => runner.Run(new Command(name, command.Input.Arguments)),
+                    originalCommand =>
+                    {
+                        runner.Run(new Command(command.Name, new Value(
+                            command.Input.Data.Concat(originalCommand.Input.Data).ToArray(),
+                            command.Input.Arguments.Concat(originalCommand.Input.Arguments).ToArray())));
+                    },
                     "arguments"));
             }
 
             return runner;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="aliases"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns></returns>
+        public static IModule CreateAliasRunner(string name, params string[] aliases)
+        {
+            name = name ?? throw new ArgumentNullException(nameof(name));
+
+            return CreateAliasRunner(new Command(name), aliases);
         }
 
         /// <summary>
@@ -64,6 +92,9 @@ namespace H.Services.Apps.Initialization
                     DefaultUserId = 482553595,
                 })
                 .AddSingleton<IModule, TorrentRunner>()
+                .AddTransient<IModule, InternetRunner>()
+                .AddTransient<IModule, UserRunner>()
+                .AddTransient<IModule, ProcessRunner>()
                 .AddSingleton<IModule, IntegrationRunner>()
                 ;
 
