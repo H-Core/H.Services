@@ -135,6 +135,29 @@ namespace H.Services
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<string> GetNextCommandAsync(CancellationToken cancellationToken = default)
+        {
+            if (InitializeState is not State.Completed)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            using var exceptions = new ExceptionsBag();
+            exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
+
+            using var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
+                .ConfigureAwait(false);
+
+            await recognition.WaitStopAsync(cancellationToken).ConfigureAwait(false);
+
+            return recognition.Result;
+        }
+
+        /// <summary>
         /// You must call <see cref="IDisposable.Dispose"/> for recognition.
         /// </summary>
         /// <param name="cancellationToken"></param>

@@ -23,6 +23,14 @@ namespace H.Services
             Add(AsyncAction.WithoutArguments("start-recognition", service.StartAsync));
             Add(AsyncAction.WithoutArguments("stop-recognition", service.StopAsync));
 
+            Add(AsyncAction.WithoutArguments("get-next-command", async cancellationToken =>
+            {
+                var value = await service.GetNextCommandAsync(cancellationToken)
+                    .ConfigureAwait(false);
+
+                return new Value(value);
+            }, "Output: command"));
+
             Add(new ProcessAction("record", async (process, command, cancellationToken) =>
             {
                 var settings = AudioSettings.Parse(command.Input.Argument);
