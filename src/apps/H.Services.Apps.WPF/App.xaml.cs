@@ -35,6 +35,7 @@ namespace H.Services.Apps
                 .Create()
                 .AddViews()
                 .AddPlatformSpecificLoggers()
+                .AddPlatformSpecificModules()
                 .Build();
         }
 

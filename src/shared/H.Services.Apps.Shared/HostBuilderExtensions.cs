@@ -1,4 +1,6 @@
 ﻿using System;
+using H.Core;
+using H.Runners;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,6 +20,25 @@ namespace H.Services.Apps
             {
                 services
                     .AddTransient<IViewFor<MainViewModel>, MainPage>();
+            });
+
+            return hostBuilder;
+        }
+
+        public static IHostBuilder AddPlatformSpecificModules(this IHostBuilder hostBuilder)
+        {
+            hostBuilder = hostBuilder ?? throw new ArgumentNullException(nameof(hostBuilder));
+
+            hostBuilder.ConfigureServices(static services =>
+            {
+                services
+                    .AddTransient<IModule, ClipboardRunner>()
+                    .AddTransient<IModule, KeyboardRunner>()
+                    .AddTransient<IModule, NotifyRunner>()
+                    //.AddSingleton(ConfigureServicesExtensions.CreateAliasRunner(
+                    //    new Command("keyboard", "^V"), 
+                    //    "вставь"))
+                    ;
             });
 
             return hostBuilder;
