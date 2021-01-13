@@ -34,10 +34,13 @@ namespace H.Services.Apps
                 services
                     .AddTransient<IModule, ClipboardRunner>()
                     .AddTransient<IModule, KeyboardRunner>()
-                    .AddTransient<IModule, NotifyRunner>()
-                    //.AddSingleton(ConfigureServicesExtensions.CreateAliasRunner(
-                    //    new Command("keyboard", "^V"), 
-                    //    "вставь"))
+                    .AddTransient<IModule, SoundRunner>()
+                    .AddTransient<IModule>(_ => new AliasRunner(
+                        new Command("paste", "clipboard-set", "keyboard ^v"),
+                        "вставь"))
+                    .AddTransient<IModule>(_ => new AliasRunner(
+                        new Command("sequence", "clipboard-set", "keyboard ^v"), 
+                        "вставь"))
                     ;
             });
 

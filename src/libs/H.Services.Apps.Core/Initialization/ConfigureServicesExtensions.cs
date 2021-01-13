@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using H.Core;
-using H.Core.Runners;
 using H.Recognizers;
 using H.Recorders;
 using H.Runners;
@@ -25,48 +24,6 @@ namespace H.Services.Apps.Initialization
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="command"></param>
-        /// <param name="aliases"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static IModule CreateAliasRunner(ICommand command, params string[] aliases)
-        {
-            command = command ?? throw new ArgumentNullException(nameof(command));
-
-            var runner = new Runner();
-            foreach (var alias in aliases)
-            {
-                runner.Add(SyncAction.WithCommand(
-                    alias,
-                    originalCommand =>
-                    {
-                        runner.Run(new Command(command.Name, new Value(
-                            command.Input.Data.Concat(originalCommand.Input.Data).ToArray(),
-                            command.Input.Arguments.Concat(originalCommand.Input.Arguments).ToArray())));
-                    },
-                    "arguments"));
-            }
-
-            return runner;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="aliases"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns></returns>
-        public static IModule CreateAliasRunner(string name, params string[] aliases)
-        {
-            name = name ?? throw new ArgumentNullException(nameof(name));
-
-            return CreateAliasRunner(new Command(name), aliases);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
         public static IServiceCollection AddModules(this IServiceCollection services)
@@ -74,28 +31,29 @@ namespace H.Services.Apps.Initialization
             services = services ?? throw new ArgumentNullException(nameof(services));
 
             services
-                .AddSingleton<IModule, NAudioRecorder>()
-                .AddSingleton<IModule, NAudioPlayer>()
-                .AddSingleton<IModule>(new WitAiRecognizer
+                .AddTransient<IModule, NAudioRecorder>()
+                .AddTransient<IModule, NAudioPlayer>()
+                .AddTransient<IModule>(_ => new WitAiRecognizer
                 {
                     Token = "XZS4M3BUYV5LBMEWJKAGJ6HCPWZ5IDGY"
                 })
-                .AddSingleton<IModule, YandexSynthesizer>()
-                .AddSingleton<IModule, GoogleSearcher>()
-                .AddSingleton(CreateAliasRunner("torrent", "смотреть"))
-                .AddSingleton(CreateAliasRunner("telegram message", "телеграмм", "отправь", "отправить"))
-                .AddSingleton(CreateAliasRunner("say", "повтори", "повторить", "скажи"))
-                .AddSingleton<IModule>(new TelegramRunner
+                .AddTransient<IModule, YandexSynthesizer>()
+                .AddTransient<IModule, GoogleSearcher>()
+                .AddTransient<IModule>(_ => new AliasRunner("torrent", "смотреть"))
+                .AddTransient<IModule>(_ => new AliasRunner("telegram message", "телеграмм", "отправь", "отправить"))
+                .AddTransient<IModule>(_ => new AliasRunner("say", "повтори", "повторить", "скажи"))
+                .AddTransient<IModule>(_ => new TelegramRunner
                 {
                     Token = Environment.GetEnvironmentVariable("TELEGRAM_HOMECENTER_BOT_TOKEN")
                             ?? throw new InvalidOperationException("TELEGRAM_HOMECENTER_BOT_TOKEN environment variable is not found."),
                     DefaultUserId = 482553595,
                 })
-                .AddSingleton<IModule, TorrentRunner>()
+                .AddTransient<IModule, TorrentRunner>()
                 .AddTransient<IModule, InternetRunner>()
                 .AddTransient<IModule, UserRunner>()
+                .AddTransient<IModule, SequenceRunner>()
                 .AddTransient<IModule, ProcessRunner>()
-                .AddSingleton<IModule, IntegrationRunner>()
+                .AddTransient<IModule, IntegrationRunner>()
                 ;
 
             return services;
@@ -111,7 +69,7 @@ namespace H.Services.Apps.Initialization
             services = services ?? throw new ArgumentNullException(nameof(services));
 
             services
-                .AddSingleton(new BoundCommand(
+                .AddTransient(_ => new BoundCommand(
                     new Command("send-telegram-voice-message"), 
                     ConsoleKey.L, control: true, isProcessing: true));
 
