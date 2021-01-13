@@ -127,7 +127,7 @@ namespace H.Services
                     OnCallRunning(call);
 
                     var result = await call.RunAsync(process, source.Token).ConfigureAwait(false);
-
+                    
                     OnCallRan(call);
                     
                     return result;
