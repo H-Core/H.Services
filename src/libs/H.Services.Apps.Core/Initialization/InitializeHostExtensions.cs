@@ -110,6 +110,10 @@ namespace H.Services.Apps.Initialization
             
             staticModuleService.Add(new DeskbandServiceRunner(host.Services.GetRequiredService<DeskbandService>()));
             staticModuleService.Add(new RecognitionServiceRunner(host.Services.GetRequiredService<RecognitionService>()));
+            staticModuleService.Add(new CallNotifier(
+                host.Services.GetRequiredService<RunnerService>(), 
+                new Command("sound", "event"), 
+                "start-recognition"));
 
             return host;
         }

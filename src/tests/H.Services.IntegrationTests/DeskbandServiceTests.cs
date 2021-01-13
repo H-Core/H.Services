@@ -42,7 +42,7 @@ namespace H.Services.IntegrationTests
             try
             {
                 await runnerService.RunAsync(
-                    new Command("deskband", "clear-preview", "" /* TODO: <---- Bug in H.Deskband */),
+                    new Command("deskband", "clear-preview"),
                     cancellationToken);
             }
             catch (OperationCanceledException)
