@@ -5,6 +5,8 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Input;
+using H.Services.Apps.Extensions;
+using H.Services.Apps.ViewModels;
 using ReactiveUI;
 
 namespace H.Services.Apps.Views
@@ -14,6 +16,9 @@ namespace H.Services.Apps.Views
         #region Properties
 
         private bool IsPreparedToClose { get; set; }
+
+        private MainViewModel SafeViewModel => ViewModel ?? 
+                                               throw new InvalidOperationException("ViewModel is null.");
 
         #endregion
 
@@ -78,13 +83,15 @@ namespace H.Services.Apps.Views
                     .DisposeWith(disposable);
 
                 InputTextBox
-                    .Events().KeyUp
-                    .Select(static x => x.Key)
-                    .Where(static key => key == Key.Enter)
-                    .Select(static _ => Unit.Default)
-                    .InvokeCommand(ViewModel?.Enter ?? throw new InvalidOperationException("ViewModel is null"))
+                    .WhenKeyUp(Key.Enter)
+                    .InvokeCommand(SafeViewModel.Enter)
                     .DisposeWith(disposable);
 
+                InputTextBox
+                    .WhenKeyUp(Key.Up)
+                    .InvokeCommand(SafeViewModel.SetLastInput)
+                    .DisposeWith(disposable);
+                
                 Interactions.UserError.RegisterHandler(static context =>
                 {
                     MessageBox.Show($"{context.Input}", "Exception:");

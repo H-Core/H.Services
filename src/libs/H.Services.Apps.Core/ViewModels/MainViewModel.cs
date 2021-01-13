@@ -15,12 +15,13 @@ namespace H.Services.Apps.ViewModels
     {
         #region Properties
 
+        private RunnerService RunnerService { get; }
+        private string LastInput { get; set; } = string.Empty;
+
         /// <summary>
         /// 
         /// </summary>
         public RoutingState Router { get; } = new();
-
-        private RunnerService RunnerService { get; }
 
         /// <summary>
         /// 
@@ -41,6 +42,11 @@ namespace H.Services.Apps.ViewModels
         /// </summary>
         public ReactiveCommand<Unit, Unit> Enter { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public ReactiveCommand<Unit, Unit> SetLastInput { get; }
+
         #endregion
 
         #endregion
@@ -60,12 +66,15 @@ namespace H.Services.Apps.ViewModels
                 static input => !string.IsNullOrWhiteSpace(input));
             Enter = ReactiveCommand.CreateFromTask(async cancellationToken =>
             {
-                var input = Input;
+                LastInput = Input;
                 Input = string.Empty;
 
-                await RunnerService.RunAsync(Command.Parse(input), cancellationToken).ConfigureAwait(false);
-            }, inputIsNotEmpty);
-            Enter.ThrownExceptions.DefaultCatch(this);
+                await RunnerService.RunAsync(Command.Parse(LastInput), cancellationToken).ConfigureAwait(false);
+            }, inputIsNotEmpty).WithDefaultCatch(this);
+            SetLastInput = ReactiveCommand.Create(() =>
+            {
+                Input = LastInput;
+            }).WithDefaultCatch(this);
         }
 
         #endregion
