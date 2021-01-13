@@ -14,7 +14,7 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public CallNotifier(RunnerService service, ICommand command, string name)
+        public CallNotifier(RunnerService service, ICommand command, string name, Predicate<string>? predicate = null)
         {
             service = service ?? throw new ArgumentNullException(nameof(service));
             Command = command ?? throw new ArgumentNullException(nameof(command));
@@ -22,6 +22,10 @@ namespace H.Services
             service.CallRunning += (_, call) =>
             {
                 if (!string.Equals(call.Command.Name, name, StringComparison.Ordinal))
+                {
+                    return;
+                }
+                if (predicate != null && !predicate(call.Command.Input.Argument))
                 {
                     return;
                 }

@@ -112,8 +112,13 @@ namespace H.Services.Apps.Initialization
             staticModuleService.Add(new RecognitionServiceRunner(host.Services.GetRequiredService<RecognitionService>()));
             staticModuleService.Add(new CallNotifier(
                 host.Services.GetRequiredService<RunnerService>(), 
-                new Command("sound", "event"), 
+                new Command("sound", "start-recording"), 
                 "start-recognition"));
+            staticModuleService.Add(new CallNotifier(
+                host.Services.GetRequiredService<RunnerService>(),
+                new Command("sound", "event"),
+                "print",
+                value => value.StartsWith("havendv:", StringComparison.OrdinalIgnoreCase)));
 
             return host;
         }
