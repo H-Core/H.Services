@@ -32,7 +32,7 @@ namespace H.Services.IntegrationTests
                 {
                     Console.WriteLine($"{nameof(commandProducer.AsyncCommandReceived)}: {value}");
 
-                    return Task.FromResult<IValue>(Value.Empty);
+                    return Task.FromResult(EmptyArray<IValue>.Value);
                 };
             }
             switch (service)
