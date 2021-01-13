@@ -56,8 +56,6 @@ namespace H.Services
             
             Add(new ProcessAction("send-telegram-voice-message", async (process, command, cancellationToken) =>
             {
-                var to = command.Input.Arguments.ElementAtOrDefault(0);
-
                 using var recognition = await service.StartConvertAsync(cancellationToken)
                     .ConfigureAwait(false);
                 using var recording = await service.StartRecordAsync(new AudioSettings(AudioFormat.Mp3), cancellationToken)
@@ -69,19 +67,17 @@ namespace H.Services
                 var result = await recognition.StopAsync(cancellationToken).ConfigureAwait(false);
 
                 var value = new Value(
-                    to ?? string.Empty, 
+                    command.Input.Argument, 
                     string.IsNullOrWhiteSpace(result) ? "unknown" : result)
                 {
                     Data = bytes,
                 };
-                await RunAsync(new Command("telegram audio", value), cancellationToken).ConfigureAwait(false);
+                await RunAsync(new Command("telegram-audio", value), cancellationToken).ConfigureAwait(false);
 
                 return value;
             }, "Arguments: to?"));
             Add(new AsyncAction("start-telegram-voice-message", async (command, cancellationToken) =>
             {
-                var to = command.Input.Arguments.ElementAtOrDefault(0);
-
                 using var recognition = await service.StartConvertAsync(cancellationToken)
                     .ConfigureAwait(false);
                 using var recording = await service.StartRecordAsync(new AudioSettings(AudioFormat.Mp3), cancellationToken)
@@ -93,12 +89,12 @@ namespace H.Services
                 var result = await recognition.StopAsync(cancellationToken).ConfigureAwait(false);
 
                 var value = new Value(
-                    to ?? string.Empty,
+                    command.Input.Argument,
                     string.IsNullOrWhiteSpace(result) ? "unknown" : result)
                 {
                     Data = bytes,
                 };
-                await RunAsync(new Command("telegram audio", value), cancellationToken).ConfigureAwait(false);
+                await RunAsync(new Command("telegram-audio", value), cancellationToken).ConfigureAwait(false);
 
                 return value;
             }, "Arguments: to?"));
