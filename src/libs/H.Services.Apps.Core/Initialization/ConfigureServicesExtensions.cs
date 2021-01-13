@@ -70,7 +70,7 @@ namespace H.Services.Apps.Initialization
 
             services
                 .AddTransient(_ => new BoundCommand(
-                    new Command("send-telegram-voice-message"), 
+                    new Command("send-telegram-voice-message", "412536036"), 
                     ConsoleKey.L, control: true, isProcessing: true));
 
             return services;
