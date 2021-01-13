@@ -36,11 +36,9 @@ namespace H.Services.Apps
                     .AddTransient<IModule, KeyboardRunner>()
                     .AddTransient<IModule, SoundRunner>()
                     .AddTransient<IModule>(_ => new AliasRunner(
-                        new Command("paste", "clipboard-set", "keyboard ^v"),
-                        "вставь"))
-                    .AddTransient<IModule>(_ => new AliasRunner(
-                        new Command("sequence", "clipboard-set", "keyboard ^v"), 
-                        "вставь"))
+                        new Command("sequence", "2", "clipboard-set", "keyboard ^v"),
+                        "paste"))
+                    .AddTransient<IModule>(_ => new AliasRunner("paste", "вставь"))
                     ;
             });
 
