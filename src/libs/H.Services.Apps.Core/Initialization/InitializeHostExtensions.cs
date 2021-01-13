@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
+using H.Core.Utilities;
 using H.Services.Apps.ViewModels;
 using H.Services.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +51,7 @@ namespace H.Services.Apps.Initialization
                     {
                         traceAction?.Invoke($"{nameof(commandProducer.AsyncCommandReceived)}: {value}");
 
-                        return Task.FromResult<IValue>(Value.Empty);
+                        return Task.FromResult(EmptyArray<IValue>.Value);
                     };
                 }
                 switch (service)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
@@ -39,12 +38,10 @@ namespace H.Services
             CommandReceived?.Invoke(this, value);
         }
 
-        private async Task<IValue> OnAsyncCommandReceivedAsync(ICommand value, CancellationToken cancellationToken = default)
+        private async Task<IValue[]> OnAsyncCommandReceivedAsync(ICommand value, CancellationToken cancellationToken = default)
         {
-            var values = await AsyncCommandReceived.InvokeAsync(this, value, cancellationToken)
+            return await AsyncCommandReceived.InvokeAsync(this, value, cancellationToken)
                 .ConfigureAwait(false);
-
-            return values.FirstOrDefault(v => !v.IsEmpty) ?? Value.Empty;
         }
 
         #endregion
@@ -79,8 +76,7 @@ namespace H.Services
 
             module.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             module.CommandReceived += (_, value) => OnCommandReceived(value);
-            module.AsyncCommandReceived += 
-                (_, value, token) => OnAsyncCommandReceivedAsync(value, token);
+            module.AsyncCommandReceived += (_, value, token) => OnAsyncCommandReceivedAsync(value, token);
 
             Modules.Add(module);
             Disposables.Add(module);

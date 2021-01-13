@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
+using H.Core.Utilities;
 using H.Services.Core;
 
 namespace H.Services
@@ -176,13 +177,13 @@ namespace H.Services
             {
                 var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 CancellationTokenSources.TryAdd(call, source);
-                
+
                 var task = Task.Run(async () =>
                 {
                     try
                     {
                         OnCallRunning(call);
-                        
+
                         var value = await call.RunAsync(source.Token).ConfigureAwait(false);
 
                         OnCallRan(call);
@@ -298,14 +299,15 @@ namespace H.Services
             }
         }
 
-        private async Task<IValue> OnAsyncCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
+        private async Task<IValue[]> OnAsyncCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
         {
             try
             {
-                var values = await RunAsync(command, cancellationToken).ConfigureAwait(false);
-                var value = values.First();
+                var commands = await RunAsync(command, cancellationToken).ConfigureAwait(false);
 
-                return value.Output;
+                return commands
+                    .Select(static command => command.Output)
+                    .ToArray();
             }
             catch (OperationCanceledException)
             {
@@ -315,14 +317,14 @@ namespace H.Services
                 OnExceptionOccurred(exception);
             }
 
-            return Value.Empty;
+            return EmptyArray<IValue>.Value;
         }
 
-        private Task<IProcess<ICommand>> OnProcessCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
+        private Task<IProcess<ICommand>[]> OnProcessCommandReceived(object _, ICommand command, CancellationToken cancellationToken)
         {
             try
             {
-                return Task.FromResult(Start(command, cancellationToken));
+                return Task.FromResult(new []{ Start(command, cancellationToken) });
             }
             catch (OperationCanceledException)
             {
@@ -332,7 +334,7 @@ namespace H.Services
                 OnExceptionOccurred(exception);
             }
 
-            return Task.FromResult<IProcess<ICommand>>(new Process<ICommand>());
+            return Task.FromResult(EmptyArray<IProcess<ICommand>>.Value);
         }
 
         #endregion
