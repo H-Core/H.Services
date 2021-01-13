@@ -119,7 +119,7 @@ namespace H.Services.Apps.Initialization
                 host.Services.GetRequiredService<RunnerService>(),
                 new Command("sound", "event"),
                 "print",
-                value => value.StartsWith("havendv:", StringComparison.OrdinalIgnoreCase)));
+                value => value.StartsWith("@havendv", StringComparison.OrdinalIgnoreCase)));
 
             return host;
         }

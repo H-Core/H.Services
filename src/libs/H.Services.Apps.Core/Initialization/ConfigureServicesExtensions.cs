@@ -40,7 +40,7 @@ namespace H.Services.Apps.Initialization
                 .AddTransient<IModule, YandexSynthesizer>()
                 .AddTransient<IModule, GoogleSearcher>()
                 .AddTransient<IModule>(_ => new AliasRunner("torrent", "смотреть"))
-                .AddTransient<IModule>(_ => new AliasRunner("telegram message", "телеграмм", "отправь", "отправить"))
+                .AddTransient<IModule>(_ => new AliasRunner("telegram-message", "телеграмм", "отправь", "отправить"))
                 .AddTransient<IModule>(_ => new AliasRunner("say", "повтори", "повторить", "скажи"))
                 .AddTransient<IModule>(_ => new TelegramRunner
                 {
