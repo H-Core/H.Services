@@ -11,7 +11,7 @@ using ReactiveUI;
 
 namespace H.Services.Apps.Views
 {
-    public partial class MainPage
+    public partial class MainWindow
     {
         #region Properties
 
@@ -24,7 +24,7 @@ namespace H.Services.Apps.Views
 
         #region Constructors
 
-        public MainPage()
+        public MainWindow()
         {
             InitializeComponent();
 
