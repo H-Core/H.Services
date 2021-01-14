@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
 using H.IO.Utilities;
+using H.Runners;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -131,6 +132,30 @@ namespace H.Services.IntegrationTests
                 {
                     Data = bytes,
                 }), cancellationToken);
+        }
+
+        [TestMethod]
+        public async Task RussianNameTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            await using var moduleService = new StaticModuleService(
+                new AliasRunner(
+                    new Command("sequence", "2", "clipboard-set", "keyboard ^v"),
+                    "вставь"),
+                new KeyboardRunner(),
+                new ClipboardRunner(),
+                new SequenceRunner()
+            );
+            await using var runnerService = new RunnerService(moduleService, moduleService);
+            
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, runnerService
+            }.EnableLogging(cancellationTokenSource);
+            
+            await runnerService.RunAsync(Command.Parse("вставь 123"), cancellationToken);
         }
     }
 }
