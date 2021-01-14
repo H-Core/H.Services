@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Windows;
 using ReactiveUI;
 
@@ -31,15 +32,17 @@ namespace H.Services.Apps.Views
                         static view => view.TextBlock.Text)
                     .DisposeWith(disposable);
 
-                var showHideCommand = ReactiveCommand.Create<bool>(value =>
-                {
-                    TextBlock.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-                });
-                this.WhenAnyValue(
-                        static x => x.TextBlock.Text,
-                        static value => !string.IsNullOrWhiteSpace(value))
-                    .InvokeCommand(showHideCommand)
-                    .DisposeWith(disposable);
+                ViewModel
+                    .WhenAnyValue(static x => x!.Text)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .BindTo(this, static view => view.TextBlock.Text);
+                ViewModel
+                    .WhenAnyValue(static x => x!.IsActive)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Select(static value => value ? Visibility.Visible : Visibility.Collapsed)
+                    .BindTo(
+                        this, 
+                        static view => view.TextBlock.Visibility);
             });
         }
     }

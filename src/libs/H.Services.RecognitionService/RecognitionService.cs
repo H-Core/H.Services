@@ -19,10 +19,15 @@ namespace H.Services
         #region Properties
 
         private ConcurrentDictionary<IStreamingRecognition, bool> Recognitions { get; } = new ();
-        
+
         #endregion
 
         #region Events
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler? Started;
 
         /// <summary>
         /// 
@@ -38,7 +43,7 @@ namespace H.Services
         /// 
         /// </summary>
         public event AsyncEventHandler<ICommand, IValue>? AsyncCommandReceived;
-
+        
         private void OnPreviewCommandReceived(ICommand value)
         {
             PreviewCommandReceived?.Invoke(this, value);
@@ -47,6 +52,11 @@ namespace H.Services
         private void OnCommandReceived(ICommand value)
         {
             CommandReceived?.Invoke(this, value);
+        }
+
+        private void OnStarted()
+        {
+            Started?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -169,9 +179,11 @@ namespace H.Services
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
             
+            OnStarted();
+
             using var exceptions = new ExceptionsBag();
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
-            
+
             var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
                 .ConfigureAwait(false);
             recognition.PreviewReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
@@ -179,12 +191,12 @@ namespace H.Services
             {
                 OnCommandReceived(Command.Parse(value));
                 Recognitions.TryRemove(recognition, out var _);
-                
+
                 recognition.Dispose();
             };
-                
+
             Recognitions.TryAdd(recognition, true);
-            
+
             return recognition;
         }
 

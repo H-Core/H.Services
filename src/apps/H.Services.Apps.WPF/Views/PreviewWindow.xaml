@@ -25,6 +25,7 @@
     >
     <Grid>
         <TextBlock
+            Visibility="Collapsed"
             x:Name="TextBlock" 
             Text="Waiting command..." 
             FontSize="54" 

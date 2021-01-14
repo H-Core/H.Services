@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive;
+using System.Threading.Tasks;
 using H.Services.Apps.Initialization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -14,6 +15,12 @@ namespace H.Services.Apps.ViewModels
         #region Properties
 
         private RecognitionService RecognitionService { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Reactive]
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// 
@@ -41,6 +48,24 @@ namespace H.Services.Apps.ViewModels
         public PreviewViewModel(RecognitionService recognitionService)
         {
             RecognitionService = recognitionService ?? throw new ArgumentNullException(nameof(recognitionService));
+            RecognitionService.Started += (_, _) =>
+            {
+                Text = "Waiting command...";
+                IsActive = true;
+            };
+            RecognitionService.PreviewCommandReceived += (_, value) =>
+            {
+                Text = $"{value}";
+            };
+            RecognitionService.CommandReceived += async (_, value) =>
+            {
+                Text = $"{value}";
+
+                await Task.Delay(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
+
+                IsActive = false;
+                Text = string.Empty;
+            };
 
             Cancel = ReactiveCommand.Create(() => {}).WithDefaultCatch(this);
         }
