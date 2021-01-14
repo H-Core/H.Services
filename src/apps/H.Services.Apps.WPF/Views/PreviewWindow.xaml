@@ -17,17 +17,22 @@
     ShowInTaskbar="False" 
     Topmost="True" 
     ResizeMode="NoResize" 
-    ShowActivated="False" 
+    ShowActivated="True" 
     WindowStyle="None" 
     AllowsTransparency="True"
+    WindowStartupLocation="CenterScreen" 
+    WindowState="Maximized"
     >
     <Grid>
-        <TextBlock 
+        <TextBlock
             x:Name="TextBlock" 
             Text="Waiting command..." 
             FontSize="54" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Center"
+            TextAlignment="Center"
+            Background="#33A8D2FF"
+            Padding="50"
             />
     </Grid>
 </reactiveUi:ReactiveWindow >
