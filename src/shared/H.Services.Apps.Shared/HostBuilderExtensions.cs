@@ -19,7 +19,8 @@ namespace H.Services.Apps
             hostBuilder.ConfigureServices(static services =>
             {
                 services
-                    .AddTransient<IViewFor<MainViewModel>, MainWindow>();
+                    .AddTransient<IViewFor<MainViewModel>, MainWindow>()
+                    .AddTransient<IViewFor<PreviewViewModel>, PreviewWindow>();
             });
 
             return hostBuilder;

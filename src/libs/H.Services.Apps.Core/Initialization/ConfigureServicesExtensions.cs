@@ -135,7 +135,9 @@ namespace H.Services.Apps.Initialization
 
             services
                 .AddSingleton<MainViewModel>()
-                .AddInterface<IScreen, MainViewModel>();
+                .AddInterface<IScreen, MainViewModel>()
+
+                .AddSingleton<PreviewViewModel>();
 
             return services;
         }
