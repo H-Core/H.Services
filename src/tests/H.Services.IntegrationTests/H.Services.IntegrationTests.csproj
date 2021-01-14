@@ -20,11 +20,14 @@
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.20.8" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.20.8" />
     <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.8" />
-    <PackageReference Include="H.Runners.SelectRunner" Version="0.21.4.100" />
-    <PackageReference Include="H.Runners.TelegramRunner" Version="0.21.4.100" />
-    <PackageReference Include="H.Runners.TorrentRunner" Version="0.21.4.100" />
+    <PackageReference Include="H.Runners.SelectRunner" Version="0.21.5.100" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.21.5.100" />
+    <PackageReference Include="H.Runners.TorrentRunner" Version="0.21.5.100" />
     <PackageReference Include="H.Searchers.WebSearchers" Version="0.20.8" />
     <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.20.8.1" />
+    <PackageReference Include="H.Runners.ClipboardRunner" Version="0.21.5.101" />
+    <PackageReference Include="H.Runners.CommonRunners" Version="0.21.5.106" />
+    <PackageReference Include="H.Runners.KeyboardRunner" Version="0.21.5.100" />
   </ItemGroup>
 
   <ItemGroup>
