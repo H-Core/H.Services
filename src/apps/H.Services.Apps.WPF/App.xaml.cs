@@ -59,12 +59,14 @@ namespace H.Services.Apps
         {
             try
             {
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
+
                 var view = (Window)GetView<MainViewModel>(out var viewModel);
                 view.Show();
 
                 var previewView = (Window)GetView<PreviewViewModel>(out var previewViewModel);
                 previewView.Show();
-
+                
                 Host.InitializeViewModelsRunners();
 
                 await Host.InitializeServicesAsync(viewModel.WriteLine).ConfigureAwait(false);
