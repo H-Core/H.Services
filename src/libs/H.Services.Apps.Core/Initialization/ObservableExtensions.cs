@@ -17,15 +17,18 @@ namespace H.Services.Apps.Initialization
         /// 
         /// </summary>
         /// <param name="observable"></param>
-        /// <param name="viewModelBase"></param>
-        public static void DefaultCatch(this IObservable<Exception> observable, ViewModelBase viewModelBase)
+        /// <param name="viewModel"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void DefaultCatch(
+            this IObservable<Exception> observable, 
+            ViewModelBase viewModel)
         {
             observable = observable ?? throw new ArgumentNullException(nameof(observable));
-            viewModelBase = viewModelBase ?? throw new ArgumentNullException(nameof(viewModelBase));
+            viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 
             observable.Subscribe(async exception =>
             {
-                viewModelBase.Log().Warn(exception);
+                viewModel.Log().Warn(exception);
 
                 await Interactions.UserError.Handle(exception);
             });
@@ -36,8 +39,9 @@ namespace H.Services.Apps.Initialization
         /// </summary>
         /// <param name="command"></param>
         /// <param name="viewModel"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static ReactiveCommand<T1, T2> WithDefaultCatch<T1, T2>(
-            this ReactiveCommand<T1, T2> command, 
+            this ReactiveCommand<T1, T2> command,
             ViewModelBase viewModel)
         {
             command = command ?? throw new ArgumentNullException(nameof(command));
