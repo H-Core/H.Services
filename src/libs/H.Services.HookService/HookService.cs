@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using H.Core;
 using H.Hooks;
 using H.Services.Core;
+using H.Services.Extensions;
+using Keys = H.Core.Keys;
+using Key = H.Core.Key;
 
 namespace H.Services
 {
@@ -18,12 +21,19 @@ namespace H.Services
         #region Properties
 
         private LowLevelMouseHook MouseHook { get; } = new();
-        private LowLevelKeyboardHook KeyboardHook { get; } = new();
+        private LowLevelKeyboardHook KeyboardHook { get; } = new()
+        {
+            IsLeftRightGranularity = true,
+            IsCapsLock = true,
+            Handling = true,
+            HandleModifierKeys = true,
+            IsExtendedMode = true,
+        };
 
         /// <summary>
         /// 
         /// </summary>
-        private Dictionary<ConsoleKeyInfo, BoundCommand> BoundCommands { get; } = new();
+        private Dictionary<Keys, BoundCommand> BoundCommands { get; } = new();
         private Dictionary<BoundCommand, IProcess<ICommand>> Processes { get; } = new();
 
         #endregion
@@ -94,13 +104,13 @@ namespace H.Services
 
             MouseHook.MouseDown += (_, args) =>
             {
-                var combination = KeysCombination.FromSpecialData(args.SpecialButton);
+                var combination = Keys.FromSpecialData(args.SpecialButton);
 
                 OnDownCombinationCaught(combination.ToString());
             };
             MouseHook.MouseUp += (_, args) =>
             {
-                var combination = KeysCombination.FromSpecialData(args.SpecialButton);
+                var combination = Keys.FromSpecialData(args.SpecialButton);
 
                 OnUpCombinationCaught(combination.ToString());
             };
@@ -108,16 +118,15 @@ namespace H.Services
             {
                 try
                 {
-                    var combination = new KeysCombination(args.Key, args.IsCtrlPressed, args.IsShiftPressed, args.IsAltPressed);
-                    var info = new ConsoleKeyInfo(
-                        (char)args.Key, (ConsoleKey)args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
+                    var keys = args.ToKeys();
+                    OnDownCombinationCaught($"{keys}");
 
-                    OnDownCombinationCaught(combination.ToString());
-
-                    if (!BoundCommands.TryGetValue(info, out var command))
+                    if (!BoundCommands.TryGetValue(keys, out var command))
                     {
                         return;
                     }
+
+                    args.IsHandled = true;
 
                     if (!command.IsProcessing)
                     {
@@ -145,16 +154,16 @@ namespace H.Services
             {
                 try
                 {
-                    var combination = new KeysCombination(args.Key, args.IsCtrlPressed, args.IsShiftPressed, args.IsAltPressed);
-                    var info = new ConsoleKeyInfo(
-                        (char)args.Key, (ConsoleKey)args.Key, args.IsShiftPressed, args.IsAltPressed, args.IsCtrlPressed);
+                    var keys = args.ToKeys();
 
-                    OnUpCombinationCaught(combination.ToString());
+                    OnUpCombinationCaught($"{keys}");
 
-                    if (!BoundCommands.TryGetValue(info, out var command))
+                    if (!BoundCommands.TryGetValue(keys, out var command))
                     {
                         return;
                     }
+
+                    args.IsHandled = true;
 
                     if (!command.IsProcessing)
                     {
@@ -203,7 +212,7 @@ namespace H.Services
         {
             command = command ?? throw new ArgumentNullException(nameof(command));
 
-            BoundCommands.Add(command.ConsoleKeyInfo, command);
+            BoundCommands.Add(command.Keys, command);
         }
 
         /// <summary>
@@ -211,7 +220,7 @@ namespace H.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<KeysCombination?> CatchCombinationAsync(CancellationToken cancellationToken = default)
+        public async Task<Keys?> CatchCombinationAsync(CancellationToken cancellationToken = default)
         {
             var keyboardHookState = KeyboardHook.IsStarted;
             var mouseHookState = MouseHook.IsStarted;
@@ -220,19 +229,21 @@ namespace H.Services
             KeyboardHook.Start();
             MouseHook.Start();
 
-            KeysCombination? combination = null;
+            Keys? caughtKeys = null;
             var isCancel = false;
 
             void OnKeyboardHookOnKeyDown(object? sender, KeyboardHookEventArgs args)
             {
-                args.Handled = true;
-                if (args.Key == Keys.Escape)
+                var keys = args.ToKeys();
+
+                args.IsHandled = true;
+                if (keys.Values.Contains(Key.Escape))
                 {
                     isCancel = true;
                     return;
                 }
 
-                combination = new KeysCombination(args.Key, args.IsCtrlPressed, args.IsShiftPressed, args.IsAltPressed);
+                caughtKeys = keys;
             }
 
             void OnMouseHookOnMouseDown(object? sender, MouseEventExtArgs args)
@@ -243,7 +254,7 @@ namespace H.Services
                 }
 
                 args.Handled = true;
-                combination = KeysCombination.FromSpecialData(args.SpecialButton);
+                caughtKeys = Keys.FromSpecialData(args.SpecialButton);
             }
 
             KeyboardHook.KeyDown += OnKeyboardHookOnKeyDown;
@@ -251,7 +262,7 @@ namespace H.Services
 
             try
             {
-                while (!isCancel && (combination == null || combination.IsEmpty))
+                while (!isCancel && (caughtKeys == null || caughtKeys.IsEmpty))
                 {
                     await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
                 }
@@ -261,11 +272,17 @@ namespace H.Services
                 KeyboardHook.KeyDown -= OnKeyboardHookOnKeyDown;
                 MouseHook.MouseDown -= OnMouseHookOnMouseDown;
 
-                KeyboardHook.SetEnabled(keyboardHookState);
-                MouseHook.SetEnabled(mouseHookState);
+                if (keyboardHookState)
+                {
+                    KeyboardHook.Start();
+                }
+                if (mouseHookState)
+                {
+                    MouseHook.Start();
+                }
             }
 
-            return isCancel ? null : combination;
+            return isCancel ? null : caughtKeys;
         }
 
         /// <summary>

@@ -93,8 +93,8 @@ namespace H.Services.IntegrationTests
             await using var hookService = new HookService
             {
                 new (
-                    new Command("telegram", "Hello, World!"), 
-                    ConsoleKey.L, alt: true),
+                    new Command("telegram-message", "Hello, World!"), 
+                    new Keys(Key.L, Key.RAlt)),
             };
             await using var moduleService = new StaticModuleService(
                 TestModules.CreateDefaultRecorder(),
@@ -125,7 +125,9 @@ namespace H.Services.IntegrationTests
 
             await using var hookService = new HookService
             {
-                new (new Command("send-telegram-voice-message"), ConsoleKey.L, alt: true, isProcessing: true),
+                new (new Command("send-telegram-voice-message"), 
+                    new Keys(Key.L, Key.RAlt),
+                    true),
             };
             await using var moduleService = new StaticModuleService(
                 TestModules.CreateDefaultRecorder(),
