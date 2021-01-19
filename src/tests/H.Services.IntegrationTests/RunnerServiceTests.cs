@@ -5,6 +5,7 @@ using H.Core;
 using H.IO.Utilities;
 using H.Runners;
 using H.Services.Core;
+using H.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Services.IntegrationTests
@@ -140,12 +141,13 @@ namespace H.Services.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
             await using var moduleService = new StaticModuleService(
                 new AliasRunner(
                     new Command("sequence", "2", "clipboard-set", "keyboard ^v"),
                     "вставь"),
                 new KeyboardRunner(),
-                new ClipboardRunner(),
+                new ClipboardRunner(app.Dispatcher),
                 new SequenceRunner()
             );
             await using var runnerService = new RunnerService(moduleService, moduleService);
@@ -163,11 +165,12 @@ namespace H.Services.IntegrationTests
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
-            
+
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
             await using var moduleService = new StaticModuleService(
-                new SelectRunner(),
+                new SelectRunner(app.Dispatcher),
                 new ScreenshotRunner(),
-                new ClipboardRunner()
+                new ClipboardRunner(app.Dispatcher)
             );
             await using var runnerService = new RunnerService(
                 moduleService,

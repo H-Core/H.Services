@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
 using H.Core.Utilities;
+using H.Runners;
 using H.Services.Core;
+using H.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Services.IntegrationTests
@@ -60,12 +62,13 @@ namespace H.Services.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
             await using var hookService = new HookService
             {
                 new (new Command("select"), ConsoleKey.S, isProcessing: true),
             };
             await using var moduleService = new StaticModuleService(
-                TestModules.CreateSelectRunner()
+               new SelectRunner(app.Dispatcher)
             );
             await using var runnerService = new RunnerService(
                 moduleService,
@@ -76,6 +79,48 @@ namespace H.Services.IntegrationTests
             {
                 moduleService, runnerService, hookService
             }.EnableLogging(cancellationTokenSource);
+
+            await hookService.InitializeAsync(cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken);
+            
+            await runnerService.WaitAllAsync(cancellationToken);
+        }
+
+        [TestMethod]
+        public async Task SelectScreenshotClipboardTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
+            await using var hookService = new HookService
+            {
+                new (new Command(
+                    "process-sequence", 
+                    "3", 
+                    "select",
+                    "screenshot",
+                    "clipboard-set-image"
+                    ),
+                    ConsoleKey.S, isProcessing: true),
+            };
+            await using var moduleService = new StaticModuleService(
+                new SelectRunner(app.Dispatcher),
+                new ScreenshotRunner(),
+                new ClipboardRunner(app.Dispatcher)
+            );
+            await using var runnerService = new RunnerService(
+                moduleService,
+                moduleService,
+                hookService
+            );
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, runnerService, hookService
+            }.EnableLogging(cancellationTokenSource);
+
+            moduleService.Add(new ProcessSequenceRunner(runnerService));
 
             await hookService.InitializeAsync(cancellationToken);
 

@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFrameworks>net4.8;net5.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,7 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Runners.ScreenshotRunner" Version="0.22.1.107" />
+    <PackageReference Include="H.Runners.ScreenshotRunner" Version="0.22.3.107" />
+    <PackageReference Include="H.Tests.WPF" Version="1.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
@@ -21,14 +23,14 @@
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.20.8" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.20.8" />
     <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.8" />
-    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.1.105" />
-    <PackageReference Include="H.Runners.TelegramRunner" Version="0.22.1.100" />
-    <PackageReference Include="H.Runners.TorrentRunner" Version="0.22.1.100" />
+    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.3.108" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.22.3.100" />
+    <PackageReference Include="H.Runners.TorrentRunner" Version="0.22.3.100" />
     <PackageReference Include="H.Searchers.WebSearchers" Version="0.20.8" />
     <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.20.8.1" />
-    <PackageReference Include="H.Runners.ClipboardRunner" Version="0.22.1.104" />
-    <PackageReference Include="H.Runners.CommonRunners" Version="0.22.1.106" />
-    <PackageReference Include="H.Runners.KeyboardRunner" Version="0.22.1.101" />
+    <PackageReference Include="H.Runners.ClipboardRunner" Version="0.22.3.107" />
+    <PackageReference Include="H.Runners.CommonRunners" Version="0.22.3.106" />
+    <PackageReference Include="H.Runners.KeyboardRunner" Version="0.22.3.101" />
   </ItemGroup>
 
   <ItemGroup>
