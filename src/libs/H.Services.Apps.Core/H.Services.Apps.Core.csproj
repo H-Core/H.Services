@@ -22,6 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="MVVM">
+    <PackageReference Include="H.Runners.ScreenshotRunner" Version="0.22.4.107" />
     <PackageReference Include="ReactiveUI.Fody" Version="13.0.38" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Splat.Microsoft.Extensions.Logging" Version="9.8.1" />

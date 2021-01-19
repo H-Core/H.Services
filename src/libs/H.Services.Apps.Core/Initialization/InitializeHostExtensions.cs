@@ -109,17 +109,26 @@ namespace H.Services.Apps.Initialization
 
             var staticModuleService = host.Services.GetRequiredService<StaticModuleService>();
             
-            staticModuleService.Add(new DeskbandServiceRunner(host.Services.GetRequiredService<DeskbandService>()));
-            staticModuleService.Add(new RecognitionServiceRunner(host.Services.GetRequiredService<RecognitionService>()));
-            staticModuleService.Add(new CallNotifier(
-                host.Services.GetRequiredService<RunnerService>(), 
-                new Command("sound", "start-recording"), 
-                "start-recognition"));
-            staticModuleService.Add(new CallNotifier(
-                host.Services.GetRequiredService<RunnerService>(),
-                new Command("sound", "event"),
-                "print",
-                value => value.StartsWith("@havendv", StringComparison.OrdinalIgnoreCase)));
+            staticModuleService.Add(
+                new DeskbandServiceRunner(
+                    host.Services.GetRequiredService<DeskbandService>()));
+            staticModuleService.Add(
+                new RecognitionServiceRunner(
+                    host.Services.GetRequiredService<RecognitionService>()));
+            staticModuleService.Add(
+                new CallNotifier(
+                    host.Services.GetRequiredService<RunnerService>(), 
+                    new Command("sound", "start-recording"), 
+                    "start-recognition"));
+            staticModuleService.Add(
+                new CallNotifier(
+                    host.Services.GetRequiredService<RunnerService>(),
+                    new Command("sound", "event"),
+                    "print",
+                    value => value.StartsWith("@havendv", StringComparison.OrdinalIgnoreCase)));
+            staticModuleService.Add(
+                new ProcessSequenceRunner(
+                    host.Services.GetRequiredService<RunnerService>()));
 
             return host;
         }

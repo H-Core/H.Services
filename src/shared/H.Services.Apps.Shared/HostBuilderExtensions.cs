@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using H.Core;
 using H.Runners;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,9 @@ namespace H.Services.Apps
             hostBuilder.ConfigureServices(static services =>
             {
                 services
+                    .AddSingleton(_ => Application.Current.Dispatcher)
                     .AddTransient<IModule, ClipboardRunner>()
+                    .AddTransient<IModule, SelectRunner>()
                     .AddTransient<IModule, KeyboardRunner>()
                     .AddTransient<IModule, SoundRunner>()
                     .AddTransient<IModule>(_ => new AliasRunner(

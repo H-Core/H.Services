@@ -53,6 +53,7 @@ namespace H.Services.Apps.Initialization
                 .AddTransient<IModule, UserRunner>()
                 .AddTransient<IModule, SequenceRunner>()
                 .AddTransient<IModule, ProcessRunner>()
+                .AddTransient<IModule, ScreenshotRunner>()
                 .AddTransient<IModule, IntegrationRunner>()
                 ;
 
@@ -72,7 +73,17 @@ namespace H.Services.Apps.Initialization
                 .AddTransient(_ => new BoundCommand(
                     new Command("start-telegram-voice-message", "412536036"), 
                     new Keys(Key.L, Key.RAlt)
-                    ));
+                    ))
+                .AddTransient(_ => new BoundCommand(
+                    new Command(
+                        "process-sequence",
+                        "3",
+                        "select",
+                        "screenshot",
+                        "clipboard-set-image"
+                    ),
+                    new Keys(Key.RAlt), 
+                    true));
 
             return services;
         }

@@ -103,7 +103,8 @@ namespace H.Services.IntegrationTests
                     "screenshot",
                     "clipboard-set-image"
                     ),
-                    ConsoleKey.S, isProcessing: true),
+                    new Keys(Key.RAlt),
+                    true),
             };
             await using var moduleService = new StaticModuleService(
                 new SelectRunner(app.Dispatcher),
