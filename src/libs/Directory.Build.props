@@ -4,6 +4,7 @@
 
   <PropertyGroup Label="Common">
     <InvariantGlobalization>true</InvariantGlobalization>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
 
   <PropertyGroup Label="Signing">
@@ -16,9 +17,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Nuget">
-    <Version>0.22.0</Version>
+    <Version>0.22.3</Version>
     <PackageReleaseNotes>
-To H.Core 0.22.0.
+To H.Core 0.22.3.
 Updated HookService.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
