@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using H.Core;
+using H.Runners;
 using H.Services;
 using H.Services.Core;
 using H.Services.IntegrationTests;
@@ -11,9 +12,9 @@ await using var container = IoCTests.CreateContainer(
     TestModules.CreateDefaultSynthesizer(),
     TestModules.CreateDefaultPlayer(),
     TestModules.CreateDefaultSearcher(),
-    TestModules.CreateTorrentRunner(),
+    new TorrentRunner(),
     TestModules.CreateTelegramRunner(),
-    TestModules.CreateSelectRunner(),
+    new SelectRunner(),
     TestModules.CreateRunnerWithPrintCommand(),
     new IntegrationRunner(),
     TestModules.CreateAliasRunnerCommand("torrent", "смотреть")

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using H.Core;
+using H.Runners;
 using H.Services.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -140,7 +141,7 @@ namespace H.Services.IntegrationTests
                 TestModules.CreateDefaultSynthesizer(),
                 TestModules.CreateDefaultPlayer(),
                 TestModules.CreateDefaultSearcher(),
-                TestModules.CreateTorrentRunner(),
+                new TorrentRunner(),
                 TestModules.CreateRunnerWithPrintCommand(),
                 new IntegrationRunner(),
                 TestModules.CreateAliasRunnerCommand("torrent", "смотреть")

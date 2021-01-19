@@ -195,15 +195,5 @@ namespace H.Services.IntegrationTests
                 DefaultUserId = 482553595,
             };
         }
-
-        public static IRunner CreateTorrentRunner()
-        {
-            return new TorrentRunner();
-        }
-
-        public static IRunner CreateSelectRunner()
-        {
-            return new SelectRunner();
-        }
     }
 }
