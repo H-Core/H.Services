@@ -14,7 +14,6 @@ await using var container = IoCTests.CreateContainer(
     TestModules.CreateDefaultSearcher(),
     new TorrentRunner(),
     TestModules.CreateTelegramRunner(),
-    new SelectRunner(),
     TestModules.CreateRunnerWithPrintCommand(),
     new IntegrationRunner(),
     TestModules.CreateAliasRunnerCommand("torrent", "смотреть")
