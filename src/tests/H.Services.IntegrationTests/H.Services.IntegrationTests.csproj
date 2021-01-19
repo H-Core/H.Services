@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="H.Runners.ScreenshotRunner" Version="0.22.1.107" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
@@ -20,14 +21,14 @@
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.20.8" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.20.8" />
     <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.8" />
-    <PackageReference Include="H.Runners.SelectRunner" Version="0.21.5.103" />
-    <PackageReference Include="H.Runners.TelegramRunner" Version="0.21.5.100" />
-    <PackageReference Include="H.Runners.TorrentRunner" Version="0.21.5.100" />
+    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.1.105" />
+    <PackageReference Include="H.Runners.TelegramRunner" Version="0.22.1.100" />
+    <PackageReference Include="H.Runners.TorrentRunner" Version="0.22.1.100" />
     <PackageReference Include="H.Searchers.WebSearchers" Version="0.20.8" />
     <PackageReference Include="H.Synthesizers.WebSynthesizers" Version="0.20.8.1" />
-    <PackageReference Include="H.Runners.ClipboardRunner" Version="0.21.5.102" />
-    <PackageReference Include="H.Runners.CommonRunners" Version="0.21.5.106" />
-    <PackageReference Include="H.Runners.KeyboardRunner" Version="0.21.5.100" />
+    <PackageReference Include="H.Runners.ClipboardRunner" Version="0.22.1.104" />
+    <PackageReference Include="H.Runners.CommonRunners" Version="0.22.1.106" />
+    <PackageReference Include="H.Runners.KeyboardRunner" Version="0.22.1.101" />
   </ItemGroup>
 
   <ItemGroup>

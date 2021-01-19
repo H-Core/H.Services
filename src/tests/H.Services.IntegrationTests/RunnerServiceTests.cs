@@ -157,5 +157,42 @@ namespace H.Services.IntegrationTests
             
             await runnerService.RunAsync(Command.Parse("вставь 123"), cancellationToken);
         }
+
+        [TestMethod]
+        public async Task SelectScreenshotClipboardTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+            
+            await using var moduleService = new StaticModuleService(
+                new SelectRunner(),
+                new ScreenshotRunner(),
+                new ClipboardRunner()
+            );
+            await using var runnerService = new RunnerService(
+                moduleService,
+                moduleService
+            );
+            using var exceptions = new IServiceBase[]
+            {
+                moduleService, runnerService
+            }.EnableLogging(cancellationTokenSource);
+
+            moduleService.Add(new ProcessSequenceRunner(runnerService));
+
+            var process = runnerService.Start(new Command(
+                "process-sequence",
+                "3",
+                "select",
+                "screenshot",
+                "clipboard-set-image"
+            ), cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await process.StopAsync(cancellationToken);
+
+            await runnerService.WaitAllAsync(cancellationToken);
+        }
     }
 }
