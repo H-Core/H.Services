@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).101</Version>
+    <Version>$(Version).102</Version>
     <PackageReleaseNotes>
 feat(HookService): Added BoundUpCaught and BoundDownCaught events.
 fix(HookService): Fixed events.

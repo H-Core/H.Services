@@ -50,12 +50,12 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<Keys>? BoundUpCaught;
+        public event EventHandler<BoundCommand>? BoundUpCaught;
 
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<Keys>? BoundDownCaught;
+        public event EventHandler<BoundCommand>? BoundDownCaught;
 
         /// <summary>
         /// 
@@ -82,12 +82,12 @@ namespace H.Services
             DownCaught?.Invoke(this, value);
         }
 
-        private void OnBoundUpCaught(Keys value)
+        private void OnBoundUpCaught(BoundCommand value)
         {
             BoundUpCaught?.Invoke(this, value);
         }
 
-        private void OnBoundDownCaught(Keys value)
+        private void OnBoundDownCaught(BoundCommand value)
         {
             BoundDownCaught?.Invoke(this, value);
         }
@@ -142,7 +142,7 @@ namespace H.Services
 
                     args.IsHandled = true;
 
-                    OnBoundDownCaught(keys);
+                    OnBoundDownCaught(command);
 
                     if (!command.IsProcessing)
                     {
@@ -181,7 +181,7 @@ namespace H.Services
 
                     args.IsHandled = true;
 
-                    OnBoundUpCaught(keys);
+                    OnBoundUpCaught(command);
 
                     if (!command.IsProcessing)
                     {

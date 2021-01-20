@@ -48,11 +48,11 @@ namespace H.Services.IntegrationTests
                     };
                     hookService.BoundUpCaught += (_, value) =>
                     {
-                        Console.WriteLine($"{nameof(hookService.BoundUpCaught)}: {value}");
+                        Console.WriteLine($"{nameof(hookService.BoundUpCaught)}: {value.Keys}, {value.Command}");
                     };
                     hookService.BoundDownCaught += (_, value) =>
                     {
-                        Console.WriteLine($"{nameof(hookService.BoundDownCaught)}: {value}");
+                        Console.WriteLine($"{nameof(hookService.BoundDownCaught)}: {value.Keys}, {value.Command}");
                     };
                     break;
                 

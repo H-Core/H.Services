@@ -59,11 +59,11 @@ namespace H.Services.Apps.Initialization
                     case HookService hookService:
                         hookService.BoundUpCaught += (_, value) =>
                         {
-                            traceAction?.Invoke($"{nameof(hookService.BoundUpCaught)}: {value}");
+                            traceAction?.Invoke($"{nameof(hookService.BoundUpCaught)}: {value.Keys}, {value.Command}");
                         };
                         hookService.BoundDownCaught += (_, value) =>
                         {
-                            traceAction?.Invoke($"{nameof(hookService.BoundDownCaught)}: {value}");
+                            traceAction?.Invoke($"{nameof(hookService.BoundDownCaught)}: {value.Keys}, {value.Command}");
                         };
                         break;
 
