@@ -43,12 +43,22 @@ namespace H.Services
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<string>? UpCombinationCaught;
+        public event EventHandler<Keys>? UpCaught;
 
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<string>? DownCombinationCaught;
+        public event EventHandler<Keys>? DownCaught;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<Keys>? BoundUpCaught;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<Keys>? BoundDownCaught;
 
         /// <summary>
         /// 
@@ -65,19 +75,29 @@ namespace H.Services
         /// </summary>
         public event AsyncEventHandler<ICommand, IProcess<ICommand>>? ProcessCommandReceived;
 
+        private void OnUpCaught(Keys value)
+        {
+            UpCaught?.Invoke(this, value);
+        }
+
+        private void OnDownCaught(Keys value)
+        {
+            DownCaught?.Invoke(this, value);
+        }
+
+        private void OnBoundUpCaught(Keys value)
+        {
+            BoundUpCaught?.Invoke(this, value);
+        }
+
+        private void OnDownBoundCombinationCaught(Keys value)
+        {
+            BoundDownCaught?.Invoke(this, value);
+        }
+
         private void OnCommandReceived(ICommand value)
         {
             CommandReceived?.Invoke(this, value);
-        }
-
-        private void OnUpCombinationCaught(string value)
-        {
-            UpCombinationCaught?.Invoke(this, value);
-        }
-
-        private void OnDownCombinationCaught(string value)
-        {
-            DownCombinationCaught?.Invoke(this, value);
         }
 
         private Task<IProcess<ICommand>[]> OnProcessCommandReceivedAsync(ICommand value, CancellationToken cancellationToken = default)
@@ -104,22 +124,22 @@ namespace H.Services
 
             MouseHook.MouseDown += (_, args) =>
             {
-                var combination = Keys.FromSpecialData(args.SpecialButton);
+                var keys = Keys.FromSpecialData(args.SpecialButton);
 
-                OnDownCombinationCaught(combination.ToString());
+                OnDownCaught(keys);
             };
             MouseHook.MouseUp += (_, args) =>
             {
-                var combination = Keys.FromSpecialData(args.SpecialButton);
+                var keys = Keys.FromSpecialData(args.SpecialButton);
 
-                OnUpCombinationCaught(combination.ToString());
+                OnUpCaught(keys);
             };
             KeyboardHook.KeyDown += async (_, args) =>
             {
                 try
                 {
                     var keys = args.ToKeys();
-                    OnDownCombinationCaught($"{keys}");
+                    OnDownCaught(keys);
 
                     if (!BoundCommands.TryGetValue(keys, out var command))
                     {
@@ -127,6 +147,8 @@ namespace H.Services
                     }
 
                     args.IsHandled = true;
+
+                    OnBoundUpCaught(keys);
 
                     if (!command.IsProcessing)
                     {
@@ -156,7 +178,7 @@ namespace H.Services
                 {
                     var keys = args.ToKeys();
 
-                    OnUpCombinationCaught($"{keys}");
+                    OnUpCaught(keys);
 
                     if (!BoundCommands.TryGetValue(keys, out var command))
                     {
@@ -164,6 +186,8 @@ namespace H.Services
                     }
 
                     args.IsHandled = true;
+
+                    OnBoundUpCaught(keys);
 
                     if (!command.IsProcessing)
                     {

@@ -6,7 +6,13 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Description></Description>
+    <Version>$(Version).100</Version>
+    <PackageReleaseNotes>
+feat(HookService): Added BoundUpCaught and BoundDownCaught events.
+$(PackageReleaseNotes)
+    </PackageReleaseNotes>
+    <Description>Allows you to bind commands to system-wide hotkeys.</Description>
+    <PackageTags>keyboard, hooks, binding, hotkeys, h.service, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Label="Analyzers">
