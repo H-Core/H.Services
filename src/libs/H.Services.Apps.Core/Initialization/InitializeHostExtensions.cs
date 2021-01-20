@@ -57,6 +57,14 @@ namespace H.Services.Apps.Initialization
                 switch (service)
                 {
                     case HookService hookService:
+                        //hookService.UpCaught += (_, value) =>
+                        //{
+                        //    traceAction?.Invoke($"{nameof(hookService.UpCaught)}: {value}");
+                        //};
+                        //hookService.DownCaught += (_, value) =>
+                        //{
+                        //    traceAction?.Invoke($"{nameof(hookService.DownCaught)}: {value}");
+                        //};
                         hookService.BoundUpCaught += (_, value) =>
                         {
                             traceAction?.Invoke($"{nameof(hookService.BoundUpCaught)}: {value.Keys}, {value.Command}");
