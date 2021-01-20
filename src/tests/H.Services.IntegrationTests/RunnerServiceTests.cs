@@ -144,7 +144,7 @@ namespace H.Services.IntegrationTests
             using var app = await TestWpfApp.CreateAsync(cancellationToken);
             await using var moduleService = new StaticModuleService(
                 new AliasRunner(
-                    new Command("sequence", "2", "clipboard-set", "keyboard ^v"),
+                    new Command("sequence", "2", "clipboard-set-text", "keyboard CTRL+V"),
                     "вставь"),
                 new KeyboardRunner(),
                 new ClipboardRunner(app.Dispatcher),
