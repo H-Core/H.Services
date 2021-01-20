@@ -6,10 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).102</Version>
+    <Version>$(Version).103</Version>
     <PackageReleaseNotes>
 feat(HookService): Added BoundUpCaught and BoundDownCaught events.
 fix(HookService): Fixed events.
+feat(HookService): Updated H.Hooks.
 $(PackageReleaseNotes)
     </PackageReleaseNotes>
     <Description>Allows you to bind commands to system-wide hotkeys.</Description>
@@ -21,7 +22,7 @@ $(PackageReleaseNotes)
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Hooks" Version="1.2.2" />
+    <PackageReference Include="H.Hooks" Version="1.2.3" />
   </ItemGroup>
 
   <ItemGroup>
