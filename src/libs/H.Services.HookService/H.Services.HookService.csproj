@@ -6,9 +6,10 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).100</Version>
+    <Version>$(Version).101</Version>
     <PackageReleaseNotes>
 feat(HookService): Added BoundUpCaught and BoundDownCaught events.
+fix(HookService): Fixed events.
 $(PackageReleaseNotes)
     </PackageReleaseNotes>
     <Description>Allows you to bind commands to system-wide hotkeys.</Description>

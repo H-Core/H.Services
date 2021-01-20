@@ -30,9 +30,6 @@ namespace H.Services
             IsExtendedMode = true,
         };
 
-        /// <summary>
-        /// 
-        /// </summary>
         private Dictionary<Keys, BoundCommand> BoundCommands { get; } = new();
         private Dictionary<BoundCommand, IProcess<ICommand>> Processes { get; } = new();
 
@@ -90,7 +87,7 @@ namespace H.Services
             BoundUpCaught?.Invoke(this, value);
         }
 
-        private void OnDownBoundCombinationCaught(Keys value)
+        private void OnBoundDownCaught(Keys value)
         {
             BoundDownCaught?.Invoke(this, value);
         }
@@ -114,14 +111,10 @@ namespace H.Services
         /// </summary>
         public HookService(params BoundCommand[] boundCommands)
         {
-            foreach (var boundCommand in boundCommands)
-            {
-                Add(boundCommand);
-            }
-
             Disposables.Add(MouseHook);
             Disposables.Add(KeyboardHook);
 
+            MouseHook.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             MouseHook.MouseDown += (_, args) =>
             {
                 var keys = Keys.FromSpecialData(args.SpecialButton);
@@ -134,6 +127,7 @@ namespace H.Services
 
                 OnUpCaught(keys);
             };
+            KeyboardHook.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             KeyboardHook.KeyDown += async (_, args) =>
             {
                 try
@@ -148,7 +142,7 @@ namespace H.Services
 
                     args.IsHandled = true;
 
-                    OnBoundUpCaught(keys);
+                    OnBoundDownCaught(keys);
 
                     if (!command.IsProcessing)
                     {
@@ -208,6 +202,11 @@ namespace H.Services
                     OnExceptionOccurred(exception);
                 }
             };
+
+            foreach (var boundCommand in boundCommands)
+            {
+                Add(boundCommand);
+            }
         }
 
         #endregion

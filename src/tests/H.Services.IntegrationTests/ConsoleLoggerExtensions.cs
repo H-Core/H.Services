@@ -38,13 +38,21 @@ namespace H.Services.IntegrationTests
             switch (service)
             {
                 case HookService hookService:
-                    hookService.UpCombinationCaught += (_, value) =>
+                    hookService.UpCaught += (_, value) =>
                     {
-                        Console.WriteLine($"{nameof(hookService.UpCombinationCaught)}: {value}");
+                        Console.WriteLine($"{nameof(hookService.UpCaught)}: {value}");
                     };
-                    hookService.DownCombinationCaught += (_, value) =>
+                    hookService.DownCaught += (_, value) =>
                     {
-                        Console.WriteLine($"{nameof(hookService.DownCombinationCaught)}: {value}");
+                        Console.WriteLine($"{nameof(hookService.DownCaught)}: {value}");
+                    };
+                    hookService.BoundUpCaught += (_, value) =>
+                    {
+                        Console.WriteLine($"{nameof(hookService.BoundUpCaught)}: {value}");
+                    };
+                    hookService.BoundDownCaught += (_, value) =>
+                    {
+                        Console.WriteLine($"{nameof(hookService.BoundDownCaught)}: {value}");
                     };
                     break;
                 
