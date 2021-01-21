@@ -39,6 +39,9 @@ namespace H.Services.Apps.Initialization
                 })
                 .AddTransient<IModule, YandexSynthesizer>()
                 .AddTransient<IModule, GoogleSearcher>()
+                .AddTransient<IModule>(_ => new AliasRunner(
+                    new Command("start-process", "https://github.com/new"), 
+                    "start-project", "создай проект", "новый проект"))
                 .AddTransient<IModule>(_ => new AliasRunner("torrent", "смотреть"))
                 .AddTransient<IModule>(_ => new AliasRunner("telegram-message", "телеграмм", "отправь", "отправить"))
                 .AddTransient<IModule>(_ => new AliasRunner("say", "повтори", "повторить", "скажи"))
@@ -49,6 +52,7 @@ namespace H.Services.Apps.Initialization
                     DefaultUserId = 482553595,
                 })
                 .AddTransient<IModule, TorrentRunner>()
+                .AddTransient<IModule, ProcessRunner>()
                 .AddTransient<IModule, InternetRunner>()
                 .AddTransient<IModule, UserRunner>()
                 .AddTransient<IModule, SequenceRunner>()
