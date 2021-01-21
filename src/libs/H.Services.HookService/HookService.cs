@@ -20,13 +20,20 @@ namespace H.Services
     {
         #region Properties
 
-        private LowLevelMouseHook MouseHook { get; } = new();
-        private LowLevelKeyboardHook KeyboardHook { get; } = new()
+        private LowLevelMouseHook MouseHook { get; } = new()
         {
+            Handling = true,
+            AddKeyboardKeys = true,
             IsLeftRightGranularity = true,
             IsCapsLock = true,
+            IsExtendedMode = true,
+        };
+        private LowLevelKeyboardHook KeyboardHook { get; } = new()
+        {
             Handling = true,
             HandleModifierKeys = true,
+            IsLeftRightGranularity = true,
+            IsCapsLock = true,
             IsExtendedMode = true,
         };
 
@@ -115,97 +122,95 @@ namespace H.Services
             Disposables.Add(KeyboardHook);
 
             MouseHook.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
-            MouseHook.MouseDown += (_, args) =>
-            {
-                var keys = Keys.FromSpecialData(args.SpecialButton);
-
-                OnDownCaught(keys);
-            };
-            MouseHook.MouseUp += (_, args) =>
-            {
-                var keys = Keys.FromSpecialData(args.SpecialButton);
-
-                OnUpCaught(keys);
-            };
+            MouseHook.Down += Hook_OnDown;
+            MouseHook.Up += Hook_OnUp;
             KeyboardHook.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
-            KeyboardHook.KeyDown += async (_, args) =>
-            {
-                try
-                {
-                    var keys = args.ToKeys();
-                    OnDownCaught(keys);
-
-                    if (!BoundCommands.TryGetValue(keys, out var command))
-                    {
-                        return;
-                    }
-
-                    args.IsHandled = true;
-
-                    OnBoundDownCaught(command);
-
-                    if (!command.IsProcessing)
-                    {
-                        OnCommandReceived(command.Command);
-                        return;
-                    }
-
-                    if (Processes.ContainsKey(command))
-                    {
-                        return;
-                    }
-
-                    var processes = await OnProcessCommandReceivedAsync(command.Command)
-                        .ConfigureAwait(false);
-                    var process = processes.First();
-
-                    Processes[command] = process;
-                }
-                catch (Exception exception)
-                {
-                    OnExceptionOccurred(exception);
-                }
-            };
-            KeyboardHook.KeyUp += async (_, args) =>
-            {
-                try
-                {
-                    var keys = args.ToKeys();
-
-                    OnUpCaught(keys);
-
-                    if (!BoundCommands.TryGetValue(keys, out var command))
-                    {
-                        return;
-                    }
-
-                    args.IsHandled = true;
-
-                    OnBoundUpCaught(command);
-
-                    if (!command.IsProcessing)
-                    {
-                        OnCommandReceived(command.Command);
-                        return;
-                    }
-
-                    if (!Processes.TryGetValue(command, out var process))
-                    {
-                        return;
-                    }
-
-                    await process.StopAsync().ConfigureAwait(false);
-                    Processes.Remove(command);
-                }
-                catch (Exception exception)
-                {
-                    OnExceptionOccurred(exception);
-                }
-            };
+            KeyboardHook.Down += Hook_OnDown;
+            KeyboardHook.Up += Hook_OnUp;
 
             foreach (var boundCommand in boundCommands)
             {
                 Add(boundCommand);
+            }
+        }
+
+        #endregion
+
+        #region Event Handlers
+
+        private async void Hook_OnUp(object _, KeyboardEventArgs args)
+        {
+            try
+            {
+                var keys = args.ToKeys();
+
+                OnUpCaught(keys);
+
+                if (!BoundCommands.TryGetValue(keys, out var command))
+                {
+                    return;
+                }
+
+                args.IsHandled = true;
+
+                OnBoundUpCaught(command);
+
+                if (!command.IsProcessing)
+                {
+                    OnCommandReceived(command.Command);
+                    return;
+                }
+
+                if (!Processes.TryGetValue(command, out var process))
+                {
+                    return;
+                }
+
+                await process.StopAsync().ConfigureAwait(false);
+                Processes.Remove(command);
+            }
+            catch (Exception exception)
+            {
+                OnExceptionOccurred(exception);
+            }
+        }
+
+        private async void Hook_OnDown(object _, KeyboardEventArgs args)
+        {
+            try
+            {
+                var keys = args.ToKeys();
+                OnDownCaught(keys);
+
+                if (!BoundCommands.TryGetValue(keys, out var command))
+                {
+                    return;
+                }
+
+                args.IsHandled = true;
+
+                OnBoundDownCaught(command);
+
+                if (!command.IsProcessing)
+                {
+                    OnCommandReceived(command.Command);
+                    return;
+                }
+
+                if (Processes.ContainsKey(command))
+                {
+                    return;
+                }
+
+                var processes = await OnProcessCommandReceivedAsync(command.Command)
+                    .ConfigureAwait(false);
+                var process = processes.First();
+
+                Processes[command] = process;
+            }
+            catch (Exception exception)
+            {
+                OnExceptionOccurred(exception);
             }
         }
 
@@ -255,7 +260,7 @@ namespace H.Services
             Keys? caughtKeys = null;
             var isCancel = false;
 
-            void OnKeyboardHookOnKeyDown(object? sender, KeyboardHookEventArgs args)
+            void OnKeyboardHookOnKeyDown(object? _, KeyboardEventArgs args)
             {
                 var keys = args.ToKeys();
 
@@ -269,19 +274,14 @@ namespace H.Services
                 caughtKeys = keys;
             }
 
-            void OnMouseHookOnMouseDown(object? sender, MouseEventExtArgs args)
+            void OnMouseHookOnMouseDown(object? _, MouseEventArgs args)
             {
-                if (args.SpecialButton == 0)
-                {
-                    return;
-                }
-
-                args.Handled = true;
-                caughtKeys = Keys.FromSpecialData(args.SpecialButton);
+                args.IsHandled = true;
+                caughtKeys = args.ToKeys();
             }
 
-            KeyboardHook.KeyDown += OnKeyboardHookOnKeyDown;
-            MouseHook.MouseDown += OnMouseHookOnMouseDown;
+            KeyboardHook.Down += OnKeyboardHookOnKeyDown;
+            MouseHook.Down += OnMouseHookOnMouseDown;
 
             try
             {
@@ -292,8 +292,8 @@ namespace H.Services
             }
             finally
             {
-                KeyboardHook.KeyDown -= OnKeyboardHookOnKeyDown;
-                MouseHook.MouseDown -= OnMouseHookOnMouseDown;
+                KeyboardHook.Down -= OnKeyboardHookOnKeyDown;
+                MouseHook.Down -= OnMouseHookOnMouseDown;
 
                 if (keyboardHookState)
                 {

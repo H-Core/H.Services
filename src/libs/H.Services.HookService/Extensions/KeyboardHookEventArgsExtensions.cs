@@ -7,7 +7,7 @@ namespace H.Services.Extensions
 {
     internal static class KeyboardHookEventArgsExtensions
     {
-        public static Keys ToKeys(this KeyboardHookEventArgs args)
+        public static Keys ToKeys(this KeyboardEventArgs args)
         {
             return new(args.Keys.Values
                 .Select(static key => (Key)(int)key)

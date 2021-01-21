@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).104</Version>
+    <Version>$(Version).105</Version>
     <PackageReleaseNotes>
 feat(HookService): Added BoundUpCaught and BoundDownCaught events.
 fix(HookService): Fixed events.
@@ -22,7 +22,7 @@ $(PackageReleaseNotes)
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Hooks" Version="1.2.4" />
+    <PackageReference Include="H.Hooks" Version="1.3.1" />
   </ItemGroup>
 
   <ItemGroup>
