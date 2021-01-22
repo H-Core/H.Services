@@ -27,22 +27,19 @@ namespace H.Services.Apps.Views
 
             this.WhenActivated(disposable =>
             {
-                this.OneWayBind(ViewModel,
-                        static viewModel => viewModel.Text,
-                        static view => view.TextBlock.Text)
-                    .DisposeWith(disposable);
-
                 ViewModel
                     .WhenAnyValue(static x => x!.Text)
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .BindTo(this, static view => view.TextBlock.Text);
+                    .BindTo(this, static view => view.TextBlock.Text)
+                    .DisposeWith(disposable);
                 ViewModel
                     .WhenAnyValue(static x => x!.IsActive)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Select(static value => value ? Visibility.Visible : Visibility.Collapsed)
                     .BindTo(
                         this, 
-                        static view => view.TextBlock.Visibility);
+                        static view => view.TextBlock.Visibility)
+                    .DisposeWith(disposable);
             });
         }
     }

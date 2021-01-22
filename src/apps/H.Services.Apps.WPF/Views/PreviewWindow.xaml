@@ -32,7 +32,7 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Center"
             TextAlignment="Center"
-            Background="#33A8D2FF"
+            Background="#7FC1DFFF"
             Padding="50"
             />
     </Grid>
