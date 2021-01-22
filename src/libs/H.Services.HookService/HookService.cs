@@ -124,6 +124,7 @@ namespace H.Services
             MouseHook.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             MouseHook.Down += Hook_OnDown;
             MouseHook.Up += Hook_OnUp;
+            MouseHook.DoubleClick += MouseHook_DoubleClick;
             KeyboardHook.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
             KeyboardHook.Down += Hook_OnDown;
             KeyboardHook.Up += Hook_OnUp;
@@ -137,6 +138,31 @@ namespace H.Services
         #endregion
 
         #region Event Handlers
+
+        private void MouseHook_DoubleClick(object _, MouseEventArgs args)
+        {
+            try
+            {
+                var values = args.ToKeys().Values.ToList();
+                values.AddRange(values);
+
+                var keys = new Keys(values.ToArray());
+
+                OnUpCaught(keys);
+
+                if (!BoundCommands.TryGetValue(keys, out var command))
+                {
+                    return;
+                }
+
+                OnBoundUpCaught(command);
+                OnCommandReceived(command.Command);
+            }
+            catch (Exception exception)
+            {
+                OnExceptionOccurred(exception);
+            }
+        }
 
         private async void Hook_OnUp(object _, KeyboardEventArgs args)
         {

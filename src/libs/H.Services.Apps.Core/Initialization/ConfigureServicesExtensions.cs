@@ -76,7 +76,7 @@ namespace H.Services.Apps.Initialization
             services
                 .AddTransient(_ => new BoundCommand(
                     new Command("start-recognition"),
-                    new Keys(Key.MouseXButton2)
+                    new Keys(Key.MouseMiddle, Key.MouseMiddle)
                 ))
                 .AddTransient(_ => new BoundCommand(
                     new Command("start-telegram-voice-message"), 
