@@ -26,6 +26,12 @@ namespace H.Services.Apps.ViewModels
         /// 
         /// </summary>
         [Reactive]
+        public bool IsStartedAgain { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Reactive]
         public string Text { get; set; } = string.Empty;
 
         #region Commands
@@ -50,6 +56,7 @@ namespace H.Services.Apps.ViewModels
             RecognitionService = recognitionService ?? throw new ArgumentNullException(nameof(recognitionService));
             RecognitionService.Started += (_, _) =>
             {
+                IsStartedAgain = IsActive;
                 Text = "Waiting command...";
                 IsActive = true;
             };
@@ -59,15 +66,18 @@ namespace H.Services.Apps.ViewModels
             };
             RecognitionService.CommandReceived += async (_, value) =>
             {
-                Text = $"{value}";
+                Text = value.IsEmpty
+                    ? "Didn't get that."
+                    : $"{value}";
 
                 await Task.Delay(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
 
-                IsActive = false;
-                Text = string.Empty;
+                IsActive = IsStartedAgain;
+                Text = IsStartedAgain ? Text : string.Empty;
+                IsStartedAgain = false;
             };
 
-            Cancel = ReactiveCommand.Create(() => {}).WithDefaultCatch(this);
+            Cancel = ReactiveCommand.Create(() => { }).WithDefaultCatch(this);
         }
 
         #endregion
