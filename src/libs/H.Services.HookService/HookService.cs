@@ -193,7 +193,6 @@ namespace H.Services
 
                 if (!command.IsProcessing)
                 {
-                    OnCommandReceived(command.Command);
                     return;
                 }
 

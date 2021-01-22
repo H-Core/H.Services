@@ -23,7 +23,7 @@
     <PackageReference Include="H.Notifiers.RssNotifier" Version="0.20.8" />
     <PackageReference Include="H.Recognizers.WitAiRecognizer" Version="0.20.8" />
     <PackageReference Include="H.Recorders.NAudioRecorder" Version="0.20.8" />
-    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.5.108" />
+    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.5.109" />
     <PackageReference Include="H.Runners.TelegramRunner" Version="0.22.5.100" />
     <PackageReference Include="H.Runners.TorrentRunner" Version="0.22.5.100" />
     <PackageReference Include="H.Searchers.WebSearchers" Version="0.20.8" />

@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Nuget">
-    <Version>0.22.5</Version>
+    <Version>0.22.6</Version>
     <PackageReleaseNotes>
-feat: To H.Core 0.22.5.
+feat: To H.Core 0.22.6.
 fix: Fixed keyboard bugs.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
