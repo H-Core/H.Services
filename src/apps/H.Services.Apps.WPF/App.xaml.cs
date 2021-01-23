@@ -75,7 +75,7 @@ namespace H.Services.Apps
             }
             catch (Exception exception)
             {
-                LogHost.Default.Fatal(exception);
+                LogHost.Default.Fatal(exception, nameof(Application_Startup));
             }
         }
 

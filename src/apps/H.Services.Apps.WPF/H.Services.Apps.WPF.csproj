@@ -15,8 +15,8 @@
   <ItemGroup>
     <PackageReference Include="H.Runners.SelectRunner" Version="0.22.5.109" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
-    <PackageReference Include="ReactiveUI.Events.WPF" Version="13.0.38" />
-    <PackageReference Include="ReactiveUI.WPF" Version="13.0.38" />
+    <PackageReference Include="ReactiveUI.Events.WPF" Version="13.1.1" />
+    <PackageReference Include="ReactiveUI.WPF" Version="13.1.1" />
     <PackageReference Include="H.Runners.ClipboardRunner" Version="0.22.5.108" />
     <PackageReference Include="H.Runners.KeyboardRunner" Version="0.22.5.103" />
     <PackageReference Include="H.Runners.SoundRunner" Version="0.22.5.100" />

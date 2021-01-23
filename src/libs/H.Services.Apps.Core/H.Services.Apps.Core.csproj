@@ -23,10 +23,10 @@
 
   <ItemGroup Label="MVVM">
     <PackageReference Include="H.Runners.ScreenshotRunner" Version="0.22.5.108" />
-    <PackageReference Include="ReactiveUI.Fody" Version="13.0.38" />
+    <PackageReference Include="ReactiveUI.Fody" Version="13.1.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Splat.Microsoft.Extensions.Logging" Version="9.8.1" />
-    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="9.8.1" />
+    <PackageReference Include="Splat.Microsoft.Extensions.Logging" Version="10.0.1" />
+    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup Label="Modules">

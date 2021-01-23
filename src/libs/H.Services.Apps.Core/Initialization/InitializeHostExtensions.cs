@@ -39,7 +39,7 @@ namespace H.Services.Apps.Initialization
                 service.ExceptionOccurred += (_, value) =>
                 {
                     traceAction?.Invoke($"{nameof(service.ExceptionOccurred)}: {value}");
-                    LogHost.Default.Warn(value);
+                    LogHost.Default.Warn(value, $"{nameof(service)}.{nameof(service.ExceptionOccurred)}");
                 };
                 if (service is ICommandProducer commandProducer)
                 {
