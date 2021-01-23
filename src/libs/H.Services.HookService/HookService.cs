@@ -141,30 +141,33 @@ namespace H.Services
 
         private void MouseHook_DoubleClick(object _, MouseEventArgs args)
         {
-            try
+            ThreadPool.QueueUserWorkItem(_ =>
             {
-                var values = args.ToKeys().Values.ToList();
-                values.AddRange(values);
-
-                var keys = new Keys(values.ToArray());
-
-                OnUpCaught(keys);
-
-                if (!BoundCommands.TryGetValue(keys, out var command))
+                try
                 {
-                    return;
-                }
+                    var values = args.ToKeys().Values.ToList();
+                    values.AddRange(values);
 
-                OnBoundUpCaught(command);
-                OnCommandReceived(command.Command);
-            }
-            catch (Exception exception)
-            {
-                OnExceptionOccurred(exception);
-            }
+                    var keys = new Keys(values.ToArray());
+
+                    OnUpCaught(keys);
+
+                    if (!BoundCommands.TryGetValue(keys, out var command))
+                    {
+                        return;
+                    }
+
+                    OnBoundUpCaught(command);
+                    OnCommandReceived(command.Command);
+                }
+                catch (Exception exception)
+                {
+                    OnExceptionOccurred(exception);
+                }
+            });
         }
 
-        private async void Hook_OnUp(object _, KeyboardEventArgs args)
+        private void Hook_OnUp(object _, KeyboardEventArgs args)
         {
             try
             {
@@ -179,21 +182,31 @@ namespace H.Services
 
                 args.IsHandled = true;
 
-                OnBoundUpCaught(command);
-
-                if (!command.IsProcessing)
+                ThreadPool.QueueUserWorkItem(async _ =>
                 {
-                    OnCommandReceived(command.Command);
-                    return;
-                }
+                    try
+                    {
+                        OnBoundUpCaught(command);
 
-                if (!Processes.TryGetValue(command, out var process))
-                {
-                    return;
-                }
+                        if (!command.IsProcessing)
+                        {
+                            OnCommandReceived(command.Command);
+                            return;
+                        }
 
-                await process.StopAsync().ConfigureAwait(false);
-                Processes.Remove(command);
+                        if (!Processes.TryGetValue(command, out var process))
+                        {
+                            return;
+                        }
+
+                        await process.StopAsync().ConfigureAwait(false);
+                        Processes.Remove(command);
+                    }
+                    catch (Exception exception)
+                    {
+                        OnExceptionOccurred(exception);
+                    }
+                });
             }
             catch (Exception exception)
             {
@@ -201,7 +214,7 @@ namespace H.Services
             }
         }
 
-        private async void Hook_OnDown(object _, KeyboardEventArgs args)
+        private void Hook_OnDown(object _, KeyboardEventArgs args)
         {
             try
             {
@@ -215,23 +228,33 @@ namespace H.Services
 
                 args.IsHandled = true;
 
-                OnBoundDownCaught(command);
-
-                if (!command.IsProcessing)
+                ThreadPool.QueueUserWorkItem(async _ =>
                 {
-                    return;
-                }
+                    try
+                    {
+                        OnBoundDownCaught(command);
 
-                if (Processes.ContainsKey(command))
-                {
-                    return;
-                }
+                        if (!command.IsProcessing)
+                        {
+                            return;
+                        }
 
-                var processes = await OnProcessCommandReceivedAsync(command.Command)
-                    .ConfigureAwait(false);
-                var process = processes.First();
+                        if (Processes.ContainsKey(command))
+                        {
+                            return;
+                        }
 
-                Processes[command] = process;
+                        var processes = await OnProcessCommandReceivedAsync(command.Command)
+                            .ConfigureAwait(false);
+                        var process = processes.First();
+
+                        Processes[command] = process;
+                    }
+                    catch (Exception exception)
+                    {
+                        OnExceptionOccurred(exception);
+                    }
+                });
             }
             catch (Exception exception)
             {

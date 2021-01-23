@@ -64,7 +64,7 @@ namespace H.Services.Apps
                 var view = (Window)GetView<MainViewModel>(out var viewModel);
                 view.Show();
 
-                var previewView = (Window)GetView<PreviewViewModel>(out var previewViewModel);
+                var previewView = (Window)GetView<PreviewViewModel>(out var _);
                 previewView.Show();
                 
                 Host.InitializeViewModelsRunners();
