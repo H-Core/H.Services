@@ -33,19 +33,19 @@ namespace H.Services.Apps.Initialization
             services
                 .AddTransient<IModule, NAudioRecorder>()
                 .AddTransient<IModule, NAudioPlayer>()
-                .AddTransient<IModule>(_ => new WitAiRecognizer
+                .AddTransient<IModule>(static _ => new WitAiRecognizer
                 {
                     Token = "XZS4M3BUYV5LBMEWJKAGJ6HCPWZ5IDGY"
                 })
                 .AddTransient<IModule, YandexSynthesizer>()
                 .AddTransient<IModule, GoogleSearcher>()
-                .AddTransient<IModule>(_ => new AliasRunner(
+                .AddTransient<IModule>(static _ => new AliasRunner(
                     new Command("start-process", "https://github.com/new"), 
                     "start-project", "создай проект", "новый проект"))
-                .AddTransient<IModule>(_ => new AliasRunner("torrent", "смотреть"))
-                .AddTransient<IModule>(_ => new AliasRunner("telegram-message", "телеграмм", "отправь", "отправить"))
-                .AddTransient<IModule>(_ => new AliasRunner("say", "повтори", "повторить", "скажи"))
-                .AddTransient<IModule>(_ => new TelegramRunner
+                .AddTransient<IModule>(static _ => new AliasRunner("torrent", "смотреть"))
+                .AddTransient<IModule>(static _ => new AliasRunner("telegram-message", "телеграмм", "отправь", "отправить"))
+                .AddTransient<IModule>(static _ => new AliasRunner("say", "повтори", "повторить", "скажи"))
+                .AddTransient<IModule>(static _ => new TelegramRunner
                 {
                     Token = Environment.GetEnvironmentVariable("TELEGRAM_HOMECENTER_BOT_TOKEN")
                             ?? throw new InvalidOperationException("TELEGRAM_HOMECENTER_BOT_TOKEN environment variable is not found."),
@@ -57,7 +57,7 @@ namespace H.Services.Apps.Initialization
                 .AddTransient<IModule, UserRunner>()
                 .AddTransient<IModule, SequenceRunner>()
                 .AddTransient<IModule, ProcessRunner>()
-                .AddTransient<IModule, ScreenshotRunner>()
+                //.AddTransient<IModule, ScreenshotRunner>()
                 .AddTransient<IModule, IntegrationRunner>()
                 ;
 
@@ -74,24 +74,25 @@ namespace H.Services.Apps.Initialization
             services = services ?? throw new ArgumentNullException(nameof(services));
 
             services
-                .AddTransient(_ => new BoundCommand(
+                .AddTransient(static _ => new BoundCommand(
                     new Command("start-recognition"),
                     new Keys(Key.MouseMiddle, Key.MouseMiddle)
                 ))
-                .AddTransient(_ => new BoundCommand(
-                    new Command("start-telegram-voice-message"), 
-                    new Keys(Key.L, Key.RAlt)
-                    ))
-                .AddTransient(_ => new BoundCommand(
-                    new Command(
-                        "process-sequence",
-                        "3",
-                        "select",
-                        "screenshot",
-                        "clipboard-set-image"
-                    ),
-                    new Keys(Key.RAlt), 
-                    true));
+                //.AddTransient(static _ => new BoundCommand(
+                //    new Command("start-telegram-voice-message"), 
+                //    new Keys(Key.L, Key.RAlt)
+                //    ))
+                //.AddTransient(static _ => new BoundCommand(
+                //    new Command(
+                //        "process-sequence",
+                //        "3",
+                //        "select",
+                //        "screenshot",
+                //        "clipboard-set-image"
+                //    ),
+                //    new Keys(Key.RAlt), 
+                //    true))
+                ;
 
             return services;
         }
@@ -134,8 +135,8 @@ namespace H.Services.Apps.Initialization
 
                 .AddSingleton(static _ => new DeskbandService
                 {
-                    ConnectedCommandFactory = _ => new Command("print", "Connected to H.DeskBand."),
-                    DisconnectedCommandFactory = _ => new Command("print", "Disconnected from H.DeskBand."),
+                    ConnectedCommandFactory = static _ => new Command("print", "Connected to H.DeskBand."),
+                    DisconnectedCommandFactory = static _ => new Command("print", "Disconnected from H.DeskBand."),
                 })
                 .AddInterface<IServiceBase, DeskbandService>()
                 .AddInterface<ICommandProducer, DeskbandService>()
@@ -176,7 +177,7 @@ namespace H.Services.Apps.Initialization
             services = services ?? throw new ArgumentNullException(nameof(services));
 
             services
-                .AddSingleton<TInterface, TService>(provider => provider.GetRequiredService<TService>());
+                .AddSingleton<TInterface, TService>(static provider => provider.GetRequiredService<TService>());
 
             return services;
         }

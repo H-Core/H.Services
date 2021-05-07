@@ -21,7 +21,7 @@ namespace H.Services.Apps.Initialization
     public static class InitializeHostExtensions
     {
         /// <summary>
-        /// 
+        /// Initializes services.
         /// </summary>
         /// <param name="host"></param>
         /// <param name="traceAction"></param>
@@ -107,7 +107,7 @@ namespace H.Services.Apps.Initialization
         }
 
         /// <summary>
-        /// 
+        /// Adds runners who manage services.
         /// </summary>
         /// <param name="host"></param>
         /// <returns></returns>
@@ -142,7 +142,7 @@ namespace H.Services.Apps.Initialization
         }
 
         /// <summary>
-        /// 
+        /// Adds runners who manage viewModels.
         /// </summary>
         /// <param name="host"></param>
         /// <returns></returns>
