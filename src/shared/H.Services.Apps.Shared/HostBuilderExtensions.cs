@@ -42,7 +42,8 @@ namespace H.Services.Apps
                     .AddTransient<IModule>(_ => new AliasRunner(
                         new Command("sequence", "2", "clipboard-set-text", "keyboard CTRL+V"),
                         "paste"))
-                    .AddTransient<IModule>(_ => new AliasRunner("paste", "вставь"))
+                    .AddTransient<IModule>(_ => new AliasRunner("paste", "вставь", "напечатай", "введи"))
+                    .AddTransient<IModule>(_ => new AliasRunner("press", "нажать"))
                     ;
             });
 
