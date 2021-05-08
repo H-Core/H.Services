@@ -9,30 +9,39 @@
     xmlns:viewModels="clr-namespace:H.Services.Apps.ViewModels;assembly=H.Services.Apps.Core"
     xmlns:tb="http://www.hardcodet.net/taskbar"
     mc:Ignorable="d"
-    Title="H.Services.Apps.WPF" 
+    Title="HomeCenter" 
     Height="800" 
     Width="800"
     WindowStartupLocation="CenterScreen"
     >
-    <Grid Margin="10">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="80*"></RowDefinition>
-            <RowDefinition Height="20*" MinHeight="80"></RowDefinition>
+            <RowDefinition Height="80*"/>
+            <RowDefinition Height="20*" MinHeight="80"/>
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0">
-            <TextBox x:Name="OutputTextBox" TextWrapping="Wrap" Text="" IsReadOnly="True" />
+            <TextBox 
+                x:Name="OutputTextBox" 
+                TextWrapping="Wrap" 
+                IsReadOnly="True" 
+                />
         </ScrollViewer>
-        <TextBox Grid.Row="1" 
-                 x:Name="InputTextBox" 
-                 TextWrapping="Wrap"/>
-        <tb:TaskbarIcon Grid.Row="0"
-                        x:Name="TaskbarIcon" 
-                        IconSource="../icon.ico" 
-                        PopupActivation="RightClick" 
-                        NoLeftClickDelay="True">
+        <TextBox 
+            Grid.Row="1" 
+            x:Name="InputTextBox" 
+            TextWrapping="Wrap"
+            />
+
+        <tb:TaskbarIcon 
+            Grid.Row="0"
+            x:Name="TaskbarIcon" 
+            IconSource="../icon.ico" 
+            PopupActivation="RightClick" 
+            NoLeftClickDelay="True"
+            >
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Show/Hide" x:Name="ShowHideMenuItem" />
+                    <MenuItem Header="Show/Hide" x:Name="ShowHideMenuItem"/>
                     <MenuItem Header="Close" x:Name="CloseMenuItem"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
