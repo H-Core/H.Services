@@ -36,7 +36,9 @@ namespace H.Services.Apps
                 .AddViews()
                 .AddPlatformSpecificLoggers()
                 .AddPlatformSpecificModules()
-                .Build();
+                .Build()
+                .AddViewModelsRunners()
+                .AddServiceRunners();
         }
 
         #endregion
@@ -67,12 +69,8 @@ namespace H.Services.Apps
 
                 var previewView = (Window)GetView<PreviewViewModel>(out var _);
                 previewView.Show();
-                
-                Host.AddViewModelsRunners();
 
                 await Host.InitializeServicesAsync(mainViewModel.WriteLine).ConfigureAwait(false);
-
-                Host.AddServiceRunners();
             }
             catch (Exception exception)
             {
@@ -82,7 +80,6 @@ namespace H.Services.Apps
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-
         }
 
         #endregion
