@@ -18,7 +18,7 @@ namespace H.Services
     {
         #region Properties
 
-        private ConcurrentDictionary<IStreamingRecognition, bool> Recognitions { get; } = new ();
+        private ConcurrentDictionary<IStreamingRecognition, CancellationTokenSource> Recognitions { get; } = new ();
 
         #endregion
 
@@ -130,16 +130,22 @@ namespace H.Services
             using var exceptions = new ExceptionsBag();
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
 
-            var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
+            var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(15));
+            
+            var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationTokenSource.Token)
                 .ConfigureAwait(false);
             recognition.Stopped += (_, _) =>
             {
-                Recognitions.TryRemove(recognition, out _);
+                if (Recognitions.TryRemove(recognition, out var source))
+                {
+                    source.Dispose();
+                }
 
                 recognition.Dispose();
             };
 
-            Recognitions.TryAdd(recognition, true);
+            Recognitions.TryAdd(recognition, cancellationTokenSource);
 
             return recognition;
         }
@@ -184,18 +190,24 @@ namespace H.Services
             using var exceptions = new ExceptionsBag();
             exceptions.ExceptionOccurred += (_, value) => OnExceptionOccurred(value);
 
-            var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationToken)
+            var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(15));
+
+            var recognition = await Recognizer.StartStreamingRecognitionAsync(Recorder, exceptions, cancellationTokenSource.Token)
                 .ConfigureAwait(false);
             recognition.PreviewReceived += (_, value) => OnPreviewCommandReceived(Command.Parse(value));
             recognition.Stopped += (_, value) =>
             {
                 OnCommandReceived(Command.Parse(value));
-                Recognitions.TryRemove(recognition, out var _);
+                if (Recognitions.TryRemove(recognition, out var source))
+                {
+                    source.Dispose();
+                }
 
                 recognition.Dispose();
             };
 
-            Recognitions.TryAdd(recognition, true);
+            Recognitions.TryAdd(recognition, cancellationTokenSource);
 
             return recognition;
         }

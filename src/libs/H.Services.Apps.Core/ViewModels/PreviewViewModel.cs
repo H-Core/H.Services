@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
+using H.Core;
 using H.Services.Apps.Initialization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -39,7 +40,7 @@ namespace H.Services.Apps.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        public ReactiveCommand<Unit, Unit> Cancel { get; }
+        public ReactiveCommand<Unit, Unit> Close { get; }
 
         #endregion
 
@@ -54,30 +55,53 @@ namespace H.Services.Apps.ViewModels
         public PreviewViewModel(RecognitionService recognitionService)
         {
             RecognitionService = recognitionService ?? throw new ArgumentNullException(nameof(recognitionService));
-            RecognitionService.Started += (_, _) =>
-            {
-                IsStartedAgain = IsActive;
-                Text = "Waiting command...";
-                IsActive = true;
-            };
-            RecognitionService.PreviewCommandReceived += (_, value) =>
-            {
-                Text = $"{value}";
-            };
-            RecognitionService.CommandReceived += async (_, value) =>
-            {
-                Text = value.IsEmpty
-                    ? "Didn't get that."
-                    : $"{value}";
 
-                await Task.Delay(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
+            Observable.FromEventPattern(
+                    RecognitionService,
+                    nameof(RecognitionService.Started))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ =>
+                {
+                    IsStartedAgain = IsActive;
+                    Text = "Waiting command...";
+                    IsActive = true;
+                });
+            Observable.FromEventPattern<ICommand>(
+                    RecognitionService,
+                    nameof(RecognitionService.PreviewCommandReceived))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(pattern =>
+                {
+                    Text = $"{pattern.EventArgs}";
+                });
+            Observable.FromEventPattern<ICommand>(
+                    RecognitionService,
+                    nameof(RecognitionService.CommandReceived))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(pattern =>
+                {
+                    Text = pattern.EventArgs.IsEmpty
+                        ? "Didn't get that."
+                        : $"{pattern.EventArgs}";
+                });
+            Observable.FromEventPattern<ICommand>(
+                    RecognitionService,
+                    nameof(RecognitionService.CommandReceived))
+                .Delay(TimeSpan.FromSeconds(3))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ =>
+                {
+                    IsActive = IsStartedAgain;
+                    Text = IsStartedAgain ? Text : string.Empty;
+                    IsStartedAgain = false;
+                });
 
-                IsActive = IsStartedAgain;
-                Text = IsStartedAgain ? Text : string.Empty;
-                IsStartedAgain = false;
-            };
+            Close = ReactiveCommand.CreateFromTask(async cancellationToken =>
+            {
+                IsActive = false;
 
-            Cancel = ReactiveCommand.Create(() => { }).WithDefaultCatch(this);
+                await RecognitionService.StopAsync(cancellationToken).ConfigureAwait(false);
+            }).WithDefaultCatch(this);
         }
 
         #endregion

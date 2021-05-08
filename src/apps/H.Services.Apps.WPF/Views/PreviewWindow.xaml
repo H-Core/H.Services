@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:H.Services.Apps.ViewModels;assembly=H.Services.Apps.Core"
     xmlns:reactiveUi="http://reactiveui.net"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     mc:Ignorable="d"
     Title="Preview" 
     Height="1080"
@@ -24,16 +25,35 @@
     WindowState="Maximized"
     >
     <Grid>
-        <TextBlock
-            Visibility="Collapsed"
-            x:Name="TextBlock" 
-            Text="Waiting command..." 
-            FontSize="54" 
+        <Grid
+            x:Name="CommandGrid"
+            Background="#7FC1DFFF"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center"
-            TextAlignment="Center"
-            Background="#7FC1DFFF"
-            Padding="50"
-            />
+            >
+            <TextBlock
+                x:Name="TextBlock" 
+                Text="Waiting command..." 
+                FontSize="54" 
+                Margin="50" 
+                />
+            <Button 
+                x:Name="CloseButton" 
+                Width="60"
+                Height="60"
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Top"
+                Margin="5"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                >
+                <materialDesign:PackIcon
+                    Kind="Close"
+                    Foreground="Black"
+                    Width="25"
+                    Height="25"
+                    />
+            </Button>
+        </Grid>
     </Grid>
 </reactiveUi:ReactiveWindow >

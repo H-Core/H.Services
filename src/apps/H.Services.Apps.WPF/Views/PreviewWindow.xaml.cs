@@ -1,6 +1,4 @@
 ﻿using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Windows;
 using ReactiveUI;
 
 namespace H.Services.Apps.Views
@@ -27,18 +25,22 @@ namespace H.Services.Apps.Views
 
             this.WhenActivated(disposable =>
             {
-                ViewModel
-                    .WhenAnyValue(static x => x!.Text)
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .BindTo(this, static view => view.TextBlock.Text)
+                if (ViewModel == null)
+                {
+                    return;
+                }
+
+                this.OneWayBind(ViewModel,
+                        static viewModel => viewModel.Text,
+                        static view => view.TextBlock.Text)
                     .DisposeWith(disposable);
-                ViewModel
-                    .WhenAnyValue(static x => x!.IsActive)
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .Select(static value => value ? Visibility.Visible : Visibility.Collapsed)
-                    .BindTo(
-                        this, 
-                        static view => view.TextBlock.Visibility)
+                this.OneWayBind(ViewModel,
+                        static viewModel => viewModel.IsActive,
+                        static view => view.CommandGrid.Visibility)
+                    .DisposeWith(disposable);
+                this.BindCommand(ViewModel,
+                        static viewModel => viewModel.Close,
+                        static view => view.CloseButton)
                     .DisposeWith(disposable);
             });
         }

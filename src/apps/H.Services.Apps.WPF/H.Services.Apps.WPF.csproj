@@ -12,11 +12,17 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.5.109" />
-    <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
+  <ItemGroup Label="Base References">
+    <PackageReference Include="MaterialDesignColors" Version="2.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="ReactiveUI.Events.WPF" Version="13.1.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="13.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
+    <PackageReference Include="H.Runners.SelectRunner" Version="0.22.5.109" />
     <PackageReference Include="H.Runners.ClipboardRunner" Version="0.22.5.108" />
     <PackageReference Include="H.Runners.KeyboardRunner" Version="0.22.5.103" />
     <PackageReference Include="H.Runners.SoundRunner" Version="0.22.5.100" />
