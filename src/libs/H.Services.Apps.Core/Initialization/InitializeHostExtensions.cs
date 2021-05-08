@@ -111,7 +111,7 @@ namespace H.Services.Apps.Initialization
         /// </summary>
         /// <param name="host"></param>
         /// <returns></returns>
-        public static IHost InitializeServiceRunners(this IHost host)
+        public static IHost AddServiceRunners(this IHost host)
         {
             host = host ?? throw new ArgumentNullException(nameof(host));
 
@@ -146,7 +146,7 @@ namespace H.Services.Apps.Initialization
         /// </summary>
         /// <param name="host"></param>
         /// <returns></returns>
-        public static IHost InitializeViewModelsRunners(this IHost host)
+        public static IHost AddViewModelsRunners(this IHost host)
         {
             host = host ?? throw new ArgumentNullException(nameof(host));
 

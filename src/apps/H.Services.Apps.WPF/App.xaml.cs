@@ -61,17 +61,18 @@ namespace H.Services.Apps
             {
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
 
-                var view = (Window)GetView<MainViewModel>(out var viewModel);
-                view.Show();
+                var mainView = (Window)GetView<MainViewModel>(out var mainViewModel);
+                mainView.Show();
+                mainView.Hide();
 
                 var previewView = (Window)GetView<PreviewViewModel>(out var _);
                 previewView.Show();
                 
-                Host.InitializeViewModelsRunners();
+                Host.AddViewModelsRunners();
 
-                await Host.InitializeServicesAsync(viewModel.WriteLine).ConfigureAwait(false);
+                await Host.InitializeServicesAsync(mainViewModel.WriteLine).ConfigureAwait(false);
 
-                Host.InitializeServiceRunners();
+                Host.AddServiceRunners();
             }
             catch (Exception exception)
             {
